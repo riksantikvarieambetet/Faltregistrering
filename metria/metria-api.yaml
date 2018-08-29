@@ -1,0 +1,147 @@
+swagger: '2.0'
+info:
+  version: 0.1.0
+  title: Metria Fältregistrering API
+  description: API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria
+  contact:
+    url: https://metria.se
+    email: todo@metria.se
+host: metria.se
+schemes:
+  - https
+basePath: /api/v1
+paths:
+  /projekt:
+    post:
+      summary: Skapa ett fältregistreringsprojekt
+      description: Skapa ett fältregistreringsprojekt
+      parameters:
+        - name: projekt
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Projekt'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: URL till projekt
+          schema:
+            type: string
+        '400':
+          description: Projektet finns redan.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Projekt
+  /lamning:
+    get:
+      summary: Hämtar lista med uppdaterade lämningar
+      description: Hämta en lista med uppdaterade lämningar
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: En lista med lämningar
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Lamning'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Lämning
+definitions:
+  Projekt:
+    description: Fältregistreringsprojekt
+    type: object
+  Metadata:
+    description: Metadata för lämningar
+    type: object
+  Lamning:
+    description: En lämningspost
+    type: object
+  Geometry:
+    description: >-
+      Geometrier uttryckta i geoJSON formatet och benämns som GeoJSON[2008]. Se
+      specifikationen http://geojson.org/.
+    type: object
+    required:
+      - type
+      - coordinates
+    properties:
+      type:
+        type: string
+        enum:
+          - Point
+          - Linestring
+          - Polygon
+        example: Point
+      crs:
+        type: object
+        required:
+          - type
+        properties:
+          type:
+            type: string
+            enum:
+              - name
+          properties:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                description: Anger koordinatsystemet för geometrierna
+                type: string
+                example: 'EPSG:3857'
+      coordinates:
+        additionalProperties: true
+        type: array
+        items:
+          type: array
+          items:
+            type: array
+            example:
+              - 57.6353939
+              - 18.2954135
+            items:
+              type: number
+  Error:
+    description: Ett fel
+    type: object
+    required:
+      - status
+      - message
+      - path
+      - timestamp
+    properties:
+      status:
+        type: integer
+        example: 500
+        description: Http statuskod
+      message:
+        type: string
+        example: 'Tekniskt fel, försök senare'
+        description: Innehåller ett felmeddelande tänkt att presenteras för slutanvändare
+      exception:
+        type: string
+        example: java.lang.NullPointerException
+        description: Innehåller ett felmeddelande tänkt för tekniker vid felsökning
+      path:
+        type: string
+        example: /lamning
+        description: Anger den resourcepath där felet uppstod
+      timestamp:
+        type: string
+        example: '1990-12-31T23:59:60Z'
+        format: dateTime
+        description: >-
+          Anger tidpunkten när felet inträffade. Tidpunkt angiven som date-time,
+          se RFC3339 (Internet Date/Time Format)
