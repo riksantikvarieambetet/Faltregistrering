@@ -303,7 +303,7 @@ definitions:
               name:
                 description: Anger koordinatsystemet för geometrierna
                 type: string
-                example: 'EPSG:3857'
+                example: 'EPSG:3006'
       coordinates:
         additionalProperties: true
         type: array
