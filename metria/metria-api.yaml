@@ -11,7 +11,6 @@ schemes:
   - https
 basePath: /raa-faltreg-api/v1
 paths:
-  
   /projekt:
     post:
       summary: Skapa ett fältregistreringsprojekt
@@ -23,13 +22,16 @@ paths:
           schema:
             $ref: '#/definitions/Projekt'
       produces:
-        - text/plain
+        - application/json
       responses:
         '201':
           description: URL till projekt
+          headers:
+            Location:
+              type: string
+              description: Anger relativ uri till projektposten. Exempel, /projekt/dd179942-9381-48d0-91cf-da00a362f4b9
           schema:
-            type: string
-            example: 'projekt/165544332211/a8411301-6210-4862-bf2c-6a762a490b1f'
+            $ref: '#/definitions/Projekt'
         '400':
           description: Projektet finns redan.
           schema:
@@ -41,7 +43,7 @@ paths:
       tags:
         - Projekt
   
-  /projekt/{organisationsid}:
+  /organisation/{organisationsid}/projekt:
     get:
       summary: Lista alla fältregistreringsprojekt
       description: Skapa ett fältregistreringsprojekt
@@ -71,16 +73,11 @@ paths:
       tags:
         - Projekt
   
-  /projekt/{organisationsid}/{projektid}:
+  /projekt/{projektid}:
     get:
       summary: Hämta ett fältregistreringsprojekt
       description: Hämta ett fältregistreringsprojekt
       parameters:
-        - name: organisationsid
-          in: path
-          required: true
-          type: string
-          description: Organisationens orgnr inkl. prefix (16) för juridiskperson. Personnummer för enskild firma.
         - name: projektid
           in: path
           required: true
@@ -122,8 +119,6 @@ paths:
       responses:
         '204':
           description: Projektet raderat. Inget innehåll returneras.
-          schema:
-            type: string
         '404':
           description: Projektet finns inte.
           schema:
