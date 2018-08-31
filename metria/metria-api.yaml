@@ -9,8 +9,9 @@ info:
 host: metria.se
 schemes:
   - https
-basePath: /api/v1
+basePath: /raa-faltreg-api/v1
 paths:
+  
   /projekt:
     post:
       summary: Skapa ett fältregistreringsprojekt
@@ -22,12 +23,13 @@ paths:
           schema:
             $ref: '#/definitions/Projekt'
       produces:
-        - application/json
+        - text/plain
       responses:
         '201':
           description: URL till projekt
           schema:
             type: string
+            example: 'projekt/165544332211/a8411301-6210-4862-bf2c-6a762a490b1f'
         '400':
           description: Projektet finns redan.
           schema:
@@ -38,10 +40,111 @@ paths:
             $ref: '#/definitions/Error'
       tags:
         - Projekt
-  /lamning:
+  
+  /projekt/{organisationsid}:
+    get:
+      summary: Lista alla fältregistreringsprojekt
+      description: Skapa ett fältregistreringsprojekt
+      parameters:
+        - name: organisationsid
+          in: path
+          required: true
+          type: string
+          description: Organisationens orgnr inkl. prefix (16) för juridiskperson. Personnummer för enskild firma.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Lista med fältprojekt registrerade för angiven organisation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Projekt'
+        '404':
+          description: Organisationen finns inte.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Projekt
+  
+  /projekt/{organisationsid}/{projektid}:
+    get:
+      summary: Hämta ett fältregistreringsprojekt
+      description: Hämta ett fältregistreringsprojekt
+      parameters:
+        - name: organisationsid
+          in: path
+          required: true
+          type: string
+          description: Organisationens orgnr inkl. prefix (16) för juridiskperson. Personnummer för enskild firma.
+        - name: projektid
+          in: path
+          required: true
+          type: string
+          description: UUID för ett projekt
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ett fältregistreringsprojekt
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Projekt'
+        '404':
+          description: Projektet finns inte.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Projekt
+    delete:
+      summary: Radera ett fältregistreringsprojekt
+      description: Radera ett fältregistreringsprojekt
+      parameters:
+        - name: organisationsid
+          in: path
+          required: true
+          type: string
+          description: Organisationens orgnr inkl. prefix (16) för juridiskperson. Personnummer för enskild firma.
+        - name: projektid
+          in: path
+          required: true
+          type: string
+          description: UUID för ett projekt
+      responses:
+        '204':
+          description: Projektet raderat. Inget innehåll returneras.
+          schema:
+            type: string
+        '404':
+          description: Projektet finns inte.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Projekt
+  
+  /lamning/{projektid}:
     get:
       summary: Hämtar lista med uppdaterade lämningar
-      description: Hämta en lista med uppdaterade lämningar
+      description: Hämta en lista som innehåller lämningar som uppdaterats samt nyregistrerats i fält
+      parameters:
+        - name: projektid
+          in: path
+          required: true
+          type: string
+          description: UUID för ett projekt
       produces:
         - application/json
       responses:
@@ -51,23 +154,128 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Lamning'
+        '404':
+          description: Projektet finns inte.
+          schema:
+            $ref: '#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
             $ref: '#/definitions/Error'
       tags:
         - Lämning
+    post:
+      summary: Lägger till befintliga lämningar till ett fältprojekt
+      description: Lägger till lämningar till ett fältprojekt
+      parameters:
+        - name: projektid
+          in: path
+          required: true
+          type: string
+          description: UUID för ett projekt
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: En lista med lämningar
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Lamning'
+        '404':
+          description: Projektet finns inte.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Lämning
+  
+  /metadata:
+    post:
+      summary: Laddar upp metadata att användas vid fältregistrering av lämningar
+      description: Laddar upp metadata att användas vid fältregistrering av lämningar
+      parameters:
+        - name: metadata
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Metadata'
+      responses:
+        '204':
+          description: Metadata mottaget. Inget innehåll returneras.
+          schema:
+            type: string
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Metadata
+
 definitions:
+  
   Projekt:
     description: Fältregistreringsprojekt
     type: object
+    required:
+      - organisationsid
+      - namn
+      - beskrivning
+    properties:
+      organisationsid:
+        type: string
+        example: '165544332211'
+        description: Ett organisationsnummer
+      namn:
+        type: string
+        example: 'Qwerty'
+        description: Projektnamn
+      beskrivning:
+        type: string
+        example: 'Ett fältprojekt'
+        description: Kort beskrivning av projekt
+      projektyta:
+        $ref: '#/definitions/Geometri'
+  
   Metadata:
     description: Metadata för lämningar
     type: object
+  
   Lamning:
-    description: En lämningspost
+    description: En lämningspost med attribut som kan registreras i fält
     type: object
-  Geometry:
+    required:
+      - id
+      - lamningsnummer
+      - lamningstyp_id
+      - geometri
+    properties:
+      id:
+        type: string
+        example: 'db14a4ed-1696-4ec5-b55d-0b3a44858765'
+      lamningsnummer:
+        type: string
+        example: 'L2018:123'
+      lamningstyp_id:
+        type: integer
+        example: 14
+      geometri:
+        type: array
+        items: 
+          $ref: '#/definitions/Geometri'
+      ingaende_lamning:
+        type: array
+        items:
+          $ref: '#/definitions/IngaendeLamning'
+  
+  IngaendeLamning:
+    description: Ingående lämning
+    type: object
+      
+  Geometri:
     description: >-
       Geometrier uttryckta i geoJSON formatet och benämns som GeoJSON[2008]. Se
       specifikationen http://geojson.org/.
@@ -113,6 +321,7 @@ definitions:
               - 18.2954135
             items:
               type: number
+  
   Error:
     description: Ett fel
     type: object
