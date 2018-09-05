@@ -2,192 +2,46 @@ swagger: '2.0'
 info:
   version: 0.1.0
   title: Metria Fältregistrering API
-  description: API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria
+  description: |
+    API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
+    
+    # Utestående frågor
+    Nedan listas frågor som behöver redas ut med Metria.
+    * Metadata (20180905)
+    Resursen POST /metadata nedan förutsätter att Metrias Fältfångssystem har en metadatauppsättning för samtliga projekt.
+    Är det korrekt uppfattat att det är så? Och i så fall, när ska då metadatadefinitioner tryckas ut?  
+    Alternativet är att varje projekt har en egen uppsättning av metadata. Då blir resursen istället POST /projekt/{projekt_id}/metadata
+    Vad gäller? 
+    
+    * Hur hantera fältordningen för lämningsattribut?
+    Det som behöver klargöras är i vilken ordning fältattributen ska registreras i fältverktyget.
+    Inmatningsordningen som attributen ska registreras i framgår INTE i api:et. 
+    Detta behöver formuleras vid sidan av api:et - alternativt att det byggs in i API:et på något sätt.
+    Metria och RAÄ får komma överens gemensamt vad som gäller.
+    
+    * Read-only attribut
+    I API-definitionerna nedan har ett antal attribut märkts upp i kommentaren med (read-only)
+    Dessa attribut är attribut som sätts av lämningsregistret (RAÄ) och ska inte kunna redigeras i fältfångtsverktyget. 
+    
+    * Sorteringsordning för metadataattribut
+    Definierade metadataattribut har en inbyggd sorteringsordning som ska användas i fältfångstverktyget.
+    Värdet används för att hantera i vilken ordning värden ska presenteras i när man t ex ska välja ett värde i en dropdown. 
+    Se exempelobjekt - Skadestatustyp.sorteringsordning 
+     
   contact:
     url: https://metria.se
     email: todo@metria.se
 host: metria.se
+
 schemes:
   - https
 basePath: /raa-faltreg-api/v1
-paths:
-  /projekt:
-    post:
-      summary: Skapa ett fältregistreringsprojekt
-      description: Skapa ett fältregistreringsprojekt
-      parameters:
-        - name: projekt
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Projekt'
-      produces:
-        - application/json
-      responses:
-        '201':
-          description: URL till projekt
-          headers:
-            Location:
-              type: string
-              description: Anger relativ uri till projektposten. Exempel, /projekt/dd179942-9381-48d0-91cf-da00a362f4b9
-          schema:
-            $ref: '#/definitions/Projekt'
-        '400':
-          description: Projektet finns redan.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: (Internal server error). Ett oväntat fel inträffade.
-          schema:
-            $ref: '#/definitions/Error'
-      tags:
-        - Projekt
-  
-  /organisation/{organisationsid}/projekt:
-    get:
-      summary: Lista alla fältregistreringsprojekt
-      description: Skapa ett fältregistreringsprojekt
-      parameters:
-        - name: organisationsid
-          in: path
-          required: true
-          type: string
-          description: Organisationens orgnr inkl. prefix (16) för juridiskperson. Personnummer för enskild firma.
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Lista med fältprojekt registrerade för angiven organisation
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Projekt'
-        '404':
-          description: Organisationen finns inte.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: (Internal server error). Ett oväntat fel inträffade.
-          schema:
-            $ref: '#/definitions/Error'
-      tags:
-        - Projekt
-  
-  /projekt/{projektid}:
-    get:
-      summary: Hämta ett fältregistreringsprojekt
-      description: Hämta ett fältregistreringsprojekt
-      parameters:
-        - name: projektid
-          in: path
-          required: true
-          type: string
-          description: UUID för ett projekt
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Ett fältregistreringsprojekt
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Projekt'
-        '404':
-          description: Projektet finns inte.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: (Internal server error). Ett oväntat fel inträffade.
-          schema:
-            $ref: '#/definitions/Error'
-      tags:
-        - Projekt
-    delete:
-      summary: Radera ett fältregistreringsprojekt
-      description: Radera ett fältregistreringsprojekt
-      parameters:
-        - name: organisationsid
-          in: path
-          required: true
-          type: string
-          description: Organisationens orgnr inkl. prefix (16) för juridiskperson. Personnummer för enskild firma.
-        - name: projektid
-          in: path
-          required: true
-          type: string
-          description: UUID för ett projekt
-      responses:
-        '204':
-          description: Projektet raderat. Inget innehåll returneras.
-        '404':
-          description: Projektet finns inte.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: (Internal server error). Ett oväntat fel inträffade.
-          schema:
-            $ref: '#/definitions/Error'
-      tags:
-        - Projekt
-  
-  /lamning/{projektid}:
-    get:
-      summary: Hämtar lista med uppdaterade lämningar
-      description: Hämta en lista som innehåller lämningar som uppdaterats samt nyregistrerats i fält
-      parameters:
-        - name: projektid
-          in: path
-          required: true
-          type: string
-          description: UUID för ett projekt
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: En lista med lämningar
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Lamning'
-        '404':
-          description: Projektet finns inte.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: (Internal server error). Ett oväntat fel inträffade.
-          schema:
-            $ref: '#/definitions/Error'
-      tags:
-        - Lämning
-    post:
-      summary: Lägger till befintliga lämningar till ett fältprojekt
-      description: Lägger till lämningar till ett fältprojekt
-      parameters:
-        - name: projektid
-          in: path
-          required: true
-          type: string
-          description: UUID för ett projekt
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: En lista med lämningar
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Lamning'
-        '404':
-          description: Projektet finns inte.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: (Internal server error). Ett oväntat fel inträffade.
-          schema:
-            $ref: '#/definitions/Error'
-      tags:
-        - Lämning
-  
+
+#### Utestående frågor
+# städa bort Faltlamning/faltlamninPost
+###
+
+paths:  
   /metadata:
     post:
       summary: Laddar upp metadata att användas vid fältregistrering av lämningar
@@ -203,6 +57,10 @@ paths:
           description: Metadata mottaget. Inget innehåll returneras.
           schema:
             type: string
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad (autentiserad).
+          schema:
+            $ref: '#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
@@ -210,115 +68,444 @@ paths:
       tags:
         - Metadata
 
-definitions:
+  /organisation/{organisation_id}/projekt:
+    get:
+      summary: Returnerar en lista av fältprojekt för angiven organisation.
+      description: Returnerar en lista av fältprojekt för angiven organisation.
+      parameters:
+        - name: organisation_id
+          in: path
+          required: true
+          type: string
+          description: Organisationens orgnr inkl. prefix (16) för juridiskperson. Personnummer för enskild firma.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Lista med fältprojekt registrerade för angiven organisation.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Projekt'
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad (autentiserad).
+          schema:
+            $ref: '#/definitions/Error'  
+        '404':
+          description: (Not found). Angiven post kunde inte hittas.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+         - Organisation 
+
+  /projekt:
+    post:
+      summary: Skapar ett fältregistreringsprojekt.
+      description: Skapar ett fältregistreringsprojekt.
+      parameters:
+        - name: projekt
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProjektPost'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Anger absolut URI till det skapade projektet.
+          headers:
+            Location:
+              type: string
+              description: Anger absolut uri till posten. Exempel, .../projekt/dd179942-9381-48d0-91cf-da00a362f4b9
+          schema:
+            $ref: '#/definitions/Projekt'
+        '400':
+          description: (Bad request). Felaktigt indata angavs för posten (typiskt valideringsfel).
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad (autentiserad).
+          schema:
+            $ref: '#/definitions/Error'
+            
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Projekt
   
-  Projekt:
-    description: Fältregistreringsprojekt
+  /projekt/{projekt_id}:
+    get:
+      summary: Hämtar projektinformation för angivet fältregistreringsprojekt.
+      description: Hämtar projektinformation för angivet fältregistreringsprojekt. <br>
+        Notera att endast metadata kring projektet returneras - inga lämningar ingår. 
+        För att hämta lämningarna för projektet.
+      parameters:
+        - name: projekt_id
+          in: path
+          required: true
+          type: string
+          description: Anger identiten för projektet (UUID).
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ett fältregistreringsprojekt.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Projekt'
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad (autentiserad).
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: (Not found). Angiven post kunde inte hittas.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Projekt
+        
+    delete:
+      summary: Raderar ett fältregistreringsprojekt.
+      description: Raderar ett fältregistreringsprojekt samt
+      parameters:
+        - name: projekt_id
+          in: path
+          format: uuid
+          required: true
+          type: string
+          description: UUID för ett projekt
+      responses:
+        '204':
+          description: (No Content). Projektet raderades. Inget innehåll returneras.
+        '400':
+          description: (Bad request). Felaktig indata.
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad.
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: (Not Found). Angiven post kunde inte hittas.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal Server Error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Projekt
+
+  /projekt/{projekt_id}/lamning:
+    get:
+      summary: Hämtar lista med uppdaterade lämningar för angivet projekt.
+      description: Hämta en lista av lämningar som uppdaterats eller nyregistrerats i fält.
+        Per default returnernas fältprojektets samtliga lämningar.
+        Tjänsten kan anropas med parametern 'forandringar_sedan' som argument.för att hämta ett delta av lämningar.
+        Tjänsten returnerar då endast de lämningar som uppdaterats sedan angiven tidpunkt.        
+      parameters:
+        - name: projekt_id
+          in: path
+          required: true
+          type: string  
+          description: Anger identitet (UUID) för ett projekt.
+        - in: query
+          name: forandringar_sedan
+          type: string
+          format: dateTime
+          description: Anger tidpunkten för att hämta endast de lämningar som förändrats i projektet sedan angiven tidpunkt. 
+            Tidpunkt anges enligt defined by full-date - RFC3339.
+            Se RFC3339 (Internet Date/Time Format) http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
+            Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
+            ex; '2017-10-30 08:00:18'
+          required: false
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: (OK). En lista med lämningar returneras.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Faltlamning'
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad (autentiserad).
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: (Not found). Angiven post kunde inte hittas.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Lämning
+        - Projekt
+        
+    post:
+      summary: Adderar en lista av lämningar till angivet fältprojekt.
+      description: Adderar en lista av lämningar till angivet fältprojekt. 
+      parameters:
+        - name: projekt_id
+          in: path
+          required: true
+          type: string
+          description: Anger identitet (UUID) för ett fältprojekt.
+        - name: faltLamningPost
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AdderaFaltlamningPost'  
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: (Created). Angivna lämningar skapades i fältprojektet. En tom body returneras.
+        '400':
+          description: (Bad request). Felaktigt indata angavs för posten (typiskt valideringsfel).
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad (autentiserad).
+          schema:
+            $ref: '#/definitions/Error'
+        '403':
+          description: (Forbidden). Användaren saknar behörighet för angivet projekt.
+          schema:
+            $ref: '#/definitions/Error'              
+        '404':
+          description: Angivet projekt_id kunde inte hittas.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'            
+      tags:
+        - Lämning
+        - Projekt
+
+  /echo/{message}:
+    get:
+      summary: Tjänst avsedd för att utföra sambandstest.
+      description: Tjänst avsedd för att utföra sambandstest. Jmf Hello world!
+      parameters:
+        - in: path
+          name: message
+          description: Värdet för det 'eko' som ska returneras tillbaka till klienten.
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad (autentiserad).
+          schema:
+            $ref: '#/definitions/Error'      
+        '200':
+          description: (OK). Ett json-objekt med attributet 'echo' returneras.
+          schema:
+            $ref: '#/definitions/Echo'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'    
+      tags:
+        - Övriga tjänster
+
+definitions:
+
+  AdderaFaltlamningPost:
+    description: Parameterobjekt för att addera lämningar till ett fältprojekt.
     type: object
-    required:
-      - organisationsid
-      - namn
-      - beskrivning
     properties:
-      organisationsid:
+      faltLamning:
+        description: 
+          Array innehållande de lamningar som ska adderas till angivet projekt.
+        type: array
+        items:
+          $ref: '#/definitions/Faltlamning'
+
+  Aktualitetstatus:
+    description: Objektrepresentation för en aktualitetstatusinstans.
+    type: object
+    properties:
+      aktualitetstatustyp_id:
+        type: integer
+        description: Anger identiteten för angiven aktualitetstatus.
+        example: 1
+      aktualitetstatus_kommentar:
         type: string
-        example: '165544332211'
-        description: Ett organisationsnummer
+        description: Anger kommentar till lämningens angivna aktualitetstatus.
+
+  Aktualitetstatustyp:
+    description: Objektrepresentation för en aktualitetstatustyp.
+    type: object
+    properties:
+      aktualitetstatustyp_id:
+        type: integer
+        description: Anger stabil identitet för aktualitetstatustypen.
+        example: 1
       namn:
         type: string
-        example: 'Qwerty'
-        description: Projektnamn
+        description: >-
+          Anger namnet för angiven aktualitetstatus (lämpligt för  presentation). 
+        example: Bekräftad i fält.
       beskrivning:
         type: string
-        example: 'Ett fältprojekt'
-        description: Kort beskrivning av projekt
-      projektyta:
-        $ref: '#/definitions/Geometri'
-  
-  Metadata:
-    description: Metadata för lämningar
-    type: object
-  
-  Lamning:
-    description: En lämningspost med attribut som kan registreras i fält
-    type: object
-    required:
-      - id
-      - lamningsnummer
-      - lamningstyp_id
-      - geometri
-    properties:
-      id:
-        type: string
-        example: 'db14a4ed-1696-4ec5-b55d-0b3a44858765'
-      lamningsnummer:
-        type: string
-        example: 'L2018:123'
-      lamningstyp_id:
+        description: >-
+          Anger beskrivning för angivet aktualitetstatus (lämpligt för
+          hjälptext). 
+        example: Det finns en uppgift om den här lämningen men den är inte bekräftad
+      sorteringsordning:
         type: integer
-        example: 14
-      geometri:
-        type: array
-        items: 
-          $ref: '#/definitions/Geometri'
-      ingaende_lamning:
-        type: array
-        items:
-          $ref: '#/definitions/IngaendeLamning'
-  
-  IngaendeLamning:
-    description: Ingående lämning
+        description: Anger ordning för sortering. (Ascending sortorder)
+        example: 10
+      aktiv:
+        type: boolean
+        description: >-
+          Anger om aktualitetstatustypen är aktiv (true) och kan användas vid
+          registrering.
+        example: true
+
+  AntikvariskBedomningtyp:
+      description: Objektrepresentation för den antikvariska bedömingstypen.
+      type: object
+      required:
+        - antikvariskbedomningtyp_id
+        - namn
+        - beskrivning
+        - sorteringsordning
+        - aktiv
+      properties:
+        antikvariskbedomningtyp_id:
+          type: integer
+          description: Anger stabil identitet för en antikvarisk bedömning. 
+            Se befintliga värden i resurs /antikvariskbedomningtyp
+          example: 1
+        namn:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Anger namnet för angiven lämningstyp (lämpligt för presentation).
+          example: Fornlämning
+        beskrivning:
+          type: string
+          description: Anger beskrivning av den antikvariska bedömningen.
+          example: Objektet är en fornlämning och därmed skyddad av lag.
+        sorteringsordning:
+          type: integer
+          description: Anger logisk ordning. (Ascending sortorder)
+          example: 0
+        aktiv:
+          type: boolean
+          description: Anger om lämningstypen är aktiv enligt lämningstyplistan.
+          example: true
+
+  Echo:
     type: object
-      
-  Geometri:
-    description: >-
-      Geometrier uttryckta i geoJSON formatet och benämns som GeoJSON[2008]. Se
-      specifikationen http://geojson.org/.
-    type: object
-    required:
-      - type
-      - coordinates
+    description: Objekt för att representera svaret till echo-tjänsten.
     properties:
-      type:
+      echo:
+        description: Anger värdet som som skickades in till tjänsten.
         type: string
-        enum:
-          - Point
-          - Linestring
-          - Polygon
-        example: Point
-      crs:
-        type: object
-        required:
-          - type
-        properties:
-          type:
-            type: string
-            enum:
-              - name
-          properties:
-            type: object
-            required:
-              - name
-            properties:
-              name:
-                description: Anger koordinatsystemet för geometrierna
-                type: string
-                example: 'EPSG:3006'
-      coordinates:
-        additionalProperties: true
+
+  Egenskap:
+    description: Objektrepresentation för en egenskap.
+    type: object
+    properties:
+      egenskapstyp_id:
+        type: integer
+        description: Anger identiteten för egenskapstypen.
+        example: 10046
+      egenskapsvarden:
+        description: >
+          Anger lista av egenskapsvärden som är kopplade till egenskapstypen. 
+          Sorterad i alfabetisk ordning på egenskapsvärdets namn (attributet egenskapsvarde_namn).<br>
+          Notera att egenskapsvärden kan vara flervärda - därav en array av egenskapsvärden.
         type: array
         items:
-          type: array
-          items:
-            type: array
-            example:
-              - 57.6353939
-              - 18.2954135
-            items:
-              type: number
-  
+          $ref: '#/definitions/Egenskapsvarde'
+          
+  Egenskapsvarde:
+    description: Objektrepresentation för en egenskap.
+    type: object
+    properties:      
+      egenskapsvarde_id:
+        type: integer
+        description: Anger identitet för ett egenskapsvärde.
+        example: 107
+
+  Egenskapstyp:
+    description: Objektrepresentation för en egenskapstyp.
+    type: object
+    properties:
+      egenskapstyp_id:
+        type: integer
+        description: Anger stabil identitet för egenskapen.
+        example: 10046
+      namn:
+        type: string
+        maxLength: 255
+        description: Anger namnet för egenskapstypen.
+        example: Grav
+      beskrivning:
+        type: string
+        description: Anger beskrivning för egenskapstypen.
+        example: bla bla...
+      aktiv:
+        type: boolean
+        description: Anger om egenskapstypen är aktiv och kan användas vid registrering.
+      flervalsvarde:
+        type: boolean
+        description: Anger om egenskapstypen är flervärdig (true) eller endast kan
+          förekomma en gång för egenskapen (false).
+        example: true
+      egenskapsvarde:
+        description: Anger lista av egenskapsvärden som är kopplade till egenskapstypen. 
+          Sorterad i alfabetisk ordning på egenskapsvärdets värde (Namnet på
+          egenskapsvärdet).    
+        type: array
+        items:
+          $ref: '#/definitions/Egenskapsvardetyp'
+
+  Egenskapsvardetyp:
+    description: Objektrepresentation för ett egenskapsvarde.
+    type: object
+    properties:
+      egenskapsvarde_id:
+        type: integer
+        description: Anger stabil identitet för ett egenskapsvärde.
+        example: 107
+      rekommenderad_antikvariskbedomningtyp_id:
+        type: integer
+        description: Rekommenderad antikvarisk bedömning för lämningstyp, kan vara null
+        example: 1001
+      varde:
+        type: string
+        maxLength: 255
+        description: Anger själva värdet för egenskapsvärdet.
+        example: Skärvsten
+      aktiv:
+        type: boolean
+        description: Anger om egenskapsvärdet är aktivt (true) och kan användas vid
+          registrering.
+          
   Error:
-    description: Ett fel
+    description: Objektrepresentation av felmeddelanden.
     type: object
     required:
       - status
@@ -344,8 +531,693 @@ definitions:
         description: Anger den resourcepath där felet uppstod
       timestamp:
         type: string
-        example: '1990-12-31T23:59:60Z'
         format: dateTime
-        description: >-
-          Anger tidpunkten när felet inträffade. Tidpunkt angiven som date-time,
-          se RFC3339 (Internet Date/Time Format)
+        description: Anger tidpunkten när felet inträffade. 
+          Tidpunkt anges enligt defined by full-date - RFC3339.
+          Se RFC3339 (Internet Date/Time Format) http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
+          Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
+        example: '2017-10-30 08:00:18'
+
+  Faltlamning:
+    description: Objektrepresentation för en lämningspost med de attribut som kan registreras i fält.
+    type: object
+    properties:
+      lamning_id:
+        type: string
+        format: uuid
+        description: Anger lämningens identitet (uuid). 
+          Notera att detta id är att betrakta som ett read-only för befintliga lämningar. 
+          Men för nya lämningar ska fältverktyget självt generera dessa. 
+        example: ccf0a7f9-1f4c-421f-a321-0e36daea43eb
+      lamningsnummer:
+        type: string
+        format: string
+        description: Anger lämningsnumret för lämningen. (read-only)
+        example: 'L2017:1'
+      tillfallig_arbetsidentitet:
+          type: string
+          description: Anger tillfällig arbetsidentitet för lämningen. Används typiskt som arbetsnamn i fält för nya lämningar. 
+          example: objekt_1
+          maxLength: 300
+      lamningstyp_id:
+        type: integer
+        format: int32
+        minimum: 1001
+        description: Anger lämningstyp_id för lämningen. Ex, 1001= lämningstypen
+          'Avrättningsplats'. 
+        example: 1035
+      antikvariskbedomningtyp_id:
+        type: integer
+        description: Anger identiteten för lämningens antikvariska bedömningstyp.
+        example: 1
+      antikvariskbedomning_motivering:
+        type: string
+        description: Anger motivering till varför den antikvariska bedömningen av lämningen avviker från den rekommenderade. <br>
+          Notera att antikvarisk motivering endast förekommer när den antikvariska bedömningen avviker från den rekommenderade.
+      antikvarisk_kommentar:
+        type: string
+        description: Anger kommentar för att tydliggöra resonemang kring, och motivering av, den antikvariska bedömningen av en lämning.
+      beskrivning:
+        type: string
+        description: Anger beskrivningstext för lämningen.
+      aktualitetstatus:
+        $ref: '#/definitions/Aktualitetstatus' 
+      undersokningsstatus:
+        $ref: '#/definitions/Undersokningsstatus'    
+      skadestatus:
+        $ref: '#/definitions/Skadestatus'   
+      egenskaper:
+        description: 
+          Array innehållande de ev. egenskapsvärden som kan anges för aktuell lämningstyp.
+        type: array
+        items:
+          $ref: '#/definitions/Egenskap'  
+      ingaendelamningar:
+        description: Array innehållande lämningens ev. ingående lämningar (förutsätter att lämningen är en s.k. sammansatt lämningstyp). <br>
+          Arrayen är sorterad i alfabetisk ordning på lämningstypens namn. <br>
+          Notera - om lämningen saknar ingående lämningar är arrayen tom. Ex; [].
+        type: array
+        items:
+          $ref: '#/definitions/Ingaendelamning'     
+      uppgiftslamnare_referenser:
+        description: Array innehållande lämningens ev. uppgiftslämnare referenser. <br>
+          Notera - om lämningen saknar referenser är arrayen tom. Ex; [].
+        type: array
+        items:
+          $ref: '#/definitions/Uppgiftslamnare'
+      placeringtyp_id:
+        type: integer
+        description: Anger lämningens placeringstyp.
+        example: 1
+      alternativnamn:
+        description: Array innehållande lämningens alternativnamn. <br>
+          Notera - om lämningen saknar alternativnamn är arrayen tom. Ex; [].
+        type: array
+        items:
+          type: string
+          maxLength: 300
+          example: 'Rökstenen'  
+      faltdatum:
+        type: string
+        format: date
+        description: Tidpunkt anges enligt defined by full-date - RFC3339.
+            Se RFC3339 (Internet Date/Time Format) http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
+            Syntax; <date-fullyear>-<date-month>-<date-mday>
+        example: '2017-10-30'
+      orientering:
+        type: string
+        description: Anger lämningens orientering i förhållande till andra fasta,
+          beständiga och väl synliga företeelser i omgivningen såsom hus,
+          stigar, gränser etc.
+        example: 32 m N om stig (ÖV).    
+      terrang:
+        type: string
+        description: Anger ev. beskrivning av terrängen vid lämningens belägenhet med geologiska och topografiska termer, samt i vilket markslag lämningen ligger. 
+        example: Udde, hagmark.
+      vegetation:
+        type: string
+        description: Anger ev. beskrivning av vegetationen som växer vid lämningen.
+        example: Kraftigt övermossad.
+      tradition:
+        type: string
+        description: Anger skriftlig eller muntlig tradition som är knuten till en lämning.
+        example: Kraftigt övermossad.
+      nuvarande_lage:
+        $ref: '#/definitions/NuvarandeLage'  
+      senast_andrad:
+          type: string
+          format: date-time
+          description: Anger tidpunkten när posten senast ändrades.
+            Tidpunkt anges enligt defined by full-date - RFC3339.
+            Se RFC3339 (Internet Date/Time Format) http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
+            Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
+          example: '2017-10-30 08:00:18'
+
+  FeatureCollectionLamning:
+    description: Anger den geografiska utbredningen för en lämnings geometri i form av ett objekt av typen "http://geojson.org/geojson-spec.html#feature-collection-objects".  
+      De geometrityper som kan förekomma är av någon av typerna:<br> <br> 
+      - Point ("http://geojson.org/geojson-spec.html#point")<br> 
+      - LineString ("http://geojson.org/geojson-spec.html#linestring")<br> 
+      - Polygon ("http://geojson.org/geojson-spec.html#polygon")<br> <br> 
+    type: object
+    required:
+      - type
+    additionalProperties: true
+    properties:
+      type:
+        type: string
+        enum:
+          - FeatureCollection
+      crs:
+        type: object
+        required:
+          - type
+        properties:
+          type:
+            type: string
+            enum:
+              - name
+          properties:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                example: 'EPSG:3006'
+                description: Anger koordinatsystemet för lämningsgeometri.
+      features:
+        type: array
+        items:
+          type: object
+          required:
+            - type
+          properties:
+            type:
+              type: string
+              enum:
+                - Feature
+            id:
+              type: string
+              description: Anger unik och stabil identitet (geometrinummer) för aktuell feature. (read-only) <br> 
+                Geometrinumret har syntaxen; Lämningsnummer-<lämningsgeometrilöpnummer>                          
+              example: 'L2017:105-4'
+            properties:
+              type: object
+              additionalProperties: true
+    
+  Ingaendelamning:
+    description: Objektrepresentation för att representera en s.k ingående lämning för en sammansatt lämning.
+    type: object
+    properties:
+      lamningstyp_id:
+        type: integer
+        description: Anger identiteten för den aktuella ingående lämningstypen.
+        example: 101
+      antal:
+        type: integer
+        description: Anger antalet ingående lämningar av den aktuella ingående lämningstypen (som ingår för den aktuella sammansatta lämningen). <br>
+          Exempel; 5 st lämningar av den ingående lämningstypen 'grav' i den sammansatta lämningstypen 'gravfält'.
+        example: 5  
+      egenskaper:
+        description: 
+          Array innehållande de ev. egenskapsvärden som kan anges för den aktuella ingåendelämningstypen.
+        type: array
+        items:
+          $ref: '#/definitions/Egenskap'
+  
+  Ingaendelamningstyp:
+    description: Objektrepresentation för en ingående lämningstyp.
+    type: object
+    properties:
+      lamningstyp_id:
+        type: integer
+        description: Anger stabil identitet för lämningstypen.
+        example: 101
+      namn:
+        type: string
+        minLength: 1
+        maxLength: 255
+        description: Anger namnet för angiven lämningstyp (lämpligt för presentation). Ex; 'Blästplats'.
+
+  KategoriTyp:
+    description: Objektrepresentation för en lämningstypkategorityp.
+    type: object
+    properties:
+      kategorityp_id:
+        type: integer
+        description: 'Anger stabil identitet för kategoritypen. <br> Ex: 11'
+      namn:
+        type: string
+        description: Anger namnet för angiven lämningsstypkategori (lämpligt för
+          presentation).
+        example: Agrara lämningar
+
+  Lamningstyp:
+    description: Objektrepresentation för en lämningstyp.
+    type: object
+    properties:
+      lamningstyp_id:
+        type: integer
+        description: Anger stabil identitet för lämningstypen.
+        example: 1001
+      namn:
+        type: string
+        minLength: 1
+        maxLength: 255
+        description: Anger namnet för angiven lämningstyp (lämpligt för presentation). Ex;
+          'Avrättningsplats'.
+      egenskapstyper:
+        description: Anger lista av ev. egenskapstyper som är kopplade till lämningstypen. 
+          Sorterad i alfabetisk ordning på egenskapstypens namn.  
+        type: array
+        items:
+          $ref: '#/definitions/Egenskapstyp'
+      ingaendelamningstyper:
+        description: >
+          Anger lista av ev. ingående lämningstyper som kan ingå i lämningstypen. 
+          Ingående lämningstyper är sorterade i alfabetisk ordning på lämningstypsnamn.  
+        type: array
+        items:
+          $ref: '#/definitions/Ingaendelamningstyp'
+      definition:
+        type: string
+        description: Anger lämningstypens definition enligt lämningstyplistan.
+        example: >-
+          Plats där avrättningar verkställdes från medeltid fram till
+          1800-talets mitt.
+      kommentar:
+        type: string
+        description: Anger en kommentar för lämningstypen enligt LTL.
+        example: >-
+          Rester efter särskilda anläggningar eller konstruktioner kan
+          förekomma. Ofta har de avrättade begravts i omedelbar närhet av
+          avrättningsplatsen. Jfr Begravningsplats enstaka..
+      beskrivningsprinciper:
+        type: string
+        description: Anger principer för hur lämingstypen ska beskrivas.
+      beskrivningsexempel:
+        type: string
+        description: Anger ett exempel på hur lämningen ska beskrivas.
+      antikvariskbedomning_kommentar:
+        type: string
+        description: Anger information för lämningstypen ska bedömas enligt LTL.
+        example: >-
+          Avrättningsplats bedöms inte som fornlämning om den kan antas ha
+          tillkommit 1850 eller senare. Under 1800-talet skedde de flesta
+          avrättningarna i fängelserna. Enstaka avrättningsplatser är dock
+          använda under 1850-talet (se t.ex. Varnhem 86:1). När dessa
+          avrättningsplatser tillkom är dock ofta oklart..
+      ovrigt:
+        type: string
+        description: Anger ytterligare information om lämningstypen.
+        example: Avrättningsplats kan redovisas med upplysningstext...
+      kategori:
+        description: Array innehållande de lämningstypkategorier som lämningen tillhör.
+        type: array
+        items:
+          $ref: '#/definitions/KategoriTyp'
+      uri:
+        type: string
+        description: Anger persistent uri för lämningstypen.
+      rekommenderad_antikvariskbedomningtyp_id:
+        type: integer
+        description: Rekommenderad antikvarisk bedömning för lämningstyp, kan vara null
+        example: 1001
+      aktiv:
+        type: boolean
+        description: Anger om lämningstypen är aktiv eller ej (relevant vid nyregistrering av en lämningtyp).
+
+  Matmetodtyp:
+      description: Objektrepresentation för en mätmetodtyp.
+      type: object
+      properties:
+        matmetodtyp_id:
+          type: integer
+          description: Anger stabil identitet för mätmetodtypen.
+          example: 4
+        namn:
+          type: string
+          description: 'Anger namnet för angiven mätmetodtyp (lämpligt för presentation). '
+          example: Totalstation
+        felmarginal_meter:
+          type: number
+          format: float
+          description: Anger defaultvärdet för mätmetodens felmarginal uttryckt i meter.
+          minLength: 0
+          minimum: 0.0001
+          maximum: 9999.9999
+          example: 0.025
+        aktiv:
+          type: boolean
+          description: >-
+            Anger om mätmetodtypen är aktiv (true) och kan användas vid
+            registrering.
+          example: true
+        sorteringsordning:
+          type: integer
+          description: Anger ordning för sortering. (Ascending sortorder)
+          example: 10
+
+  Metadata:
+    description: Objektrepresentation av metadatadefinitioner avsedd att användas vid fältfångst av lämningar.
+    type: object
+    required:
+      - lamningstyplista
+    properties:
+      aktualitetstatus:
+        description: Anger metadata definitioner avseende aktualitetstatus.        
+        type: array
+        items:
+          $ref: '#/definitions/Aktualitetstatustyp'
+      antikvariskbedomning:
+        description: Anger metadata definitioner avseende antikvariskbedomning.        
+        type: array
+        items:
+          $ref: '#/definitions/AntikvariskBedomningtyp'
+      lamningstyplista:
+        description: Anger metadata definitioner för lämningstypinformation.        
+        type: array
+        items:
+          $ref: '#/definitions/Lamningstyp'    
+      matmetod:
+        description: Anger metadata definitioner avseende matmetod.        
+        type: array
+        items:
+          $ref: '#/definitions/Matmetodtyp'    
+      registreringsunderlag:
+        description: Anger metadata definitioner avseende registreringsunderlag.        
+        type: array
+        items:
+          $ref: '#/definitions/Registreringsunderlagtyp'
+      registreringsunderlagskvalitettyp:
+        description: Anger metadata definitioner avseende registreringsunderlagskvalitet.        
+        type: array
+        items:
+          $ref: '#/definitions/Registreringsunderlagkvalitettyp'
+      skadestatus:
+        description: Anger metadata definitioner avseende skadestatus.        
+        type: array
+        items:
+          $ref: '#/definitions/Skadestatustyp'
+      undersokningsstatus:
+        description: Anger metadata definitioner avseende undersökningsstatus.        
+        type: array
+        items:
+          $ref: '#/definitions/Undersokningsstatustyp'                 
+
+  NuvarandeLage:
+    description: Objektrepresentation för en lämnings "nuvarande läge", dess geometri och kvalitetsegenskaper för hur inmätningen av lämningen genomfördes.
+    type: object
+    properties:
+      registreringsunderlagtyp_id:
+        type: integer
+        description: Anger stabil identitet för den registreringsunderlagstyp som användes vid inmätningen.
+        example: 101
+      registreringsunderlagtypkvalitettyp_id:
+        type: integer
+        description: Anger stabil identitet till den registreringsunderlagskvalitettyp som användes vid inmätningen. <br>
+          Registreringsunderlagskvalittetypen är alltid kopplad till det registreringsunderlag som användes vid inmätningen.
+          T ex så är kvalitettypen 'Skala 1:5000' kopplad till registreringsunderlagstypen 'Fastighetskartan/utskrivet ortofoto'.        
+        example: 203
+      matmetodtyp_id:
+        type: integer
+        description: Anger stabil identitet för den mätmetodtyp som användes vid inmätningen.
+        example: 4  
+      felmarginal_meter:
+        type: number
+        format: float
+        description: Anger inmätningens felmarginal uttryckt i meter.
+        minimum: 0.0000
+        maximum: 9999.9999 
+        example: 0.025
+      kvalitetsmarkning:
+        type: string
+        description: Anger beskrivning av kvalitet avseende inmätning. 
+        example: Avvikelse upp till 10 meter... 
+      inmatning_kommentar:
+        type: string
+        description: Anger ev. kommentar för hur inmätningen genomfördes.
+        example: 'Vid inmätningen använde GPS:en 22 satelliter.'
+      geometri:
+        $ref: '#/definitions/FeatureCollectionLamning'
+          
+  Projekt:
+    description: Objektrepresentation av ett fältregistreringsprojekt.
+    type: object
+    required:
+      - organisation_id
+      - namn
+      - beskrivning
+    properties:
+      organisation_id:
+        type: string
+        description: Anger organisationsnumret för den organisation som ett projekt tillhör.
+        minLength: 12
+        maxLength: 12
+        example: '165544332211'        
+      namn:
+        type: string
+        example: 'Qwerty'
+        description: Anger projektets namn.
+      beskrivning:
+        type: string
+        example: 'Ett fältprojekt...'
+        description: Kort beskrivning av projekt.
+      projektomrade:
+        $ref: '#/definitions/FeatureCollectionProjektomrade' 
+      skapad_tidpunkt:
+          type: string
+          format: date-time
+          description: Anger tidpunkten när posten skapades.
+            Tidpunkt anges enligt defined by full-date - RFC3339.
+            Se RFC3339 (Internet Date/Time Format) http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
+            Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
+          example: '2017-10-30 08:00:18'      
+         
+  ProjektPost:
+    description: Parameterobjekt för att skapa ett fältregistreringsprojekt.
+    type: object
+    required:
+      - organisation_id
+      - namn
+      - beskrivning
+    properties:
+      organisation_id:
+        type: string
+        description: Anger organisationsnumret för den organisation som ett projekt tillhör.
+        minLength: 12
+        maxLength: 12
+        example: '165544332211'        
+      namn:
+        type: string
+        example: 'Qwerty'
+        description: Anger projektets namn.
+      beskrivning:
+        type: string
+        example: 'Ett fältprojekt...'
+        description: Kort beskrivning av projekt.
+      projektomrade:
+        $ref: '#/definitions/FeatureCollectionProjektomrade'
+
+  Registreringsunderlagtyp:
+      description: Objektrepresentation för en registreringsunderlagtyp.
+      type: object
+      properties:
+        registreringsunderlagtyp_id:
+          type: integer
+          description: Anger stabil identitet för en registreringsunderlagtyp.
+          example: 100
+        namn:
+          type: string
+          description: Anger namnet för angiven registreringsunderlagtyp (lämpligt för
+            presentation).
+          example: Fastighetskartan/utskrivet ortofoto
+        registreringsunderlagkvaliteter:
+          type: array
+          items:
+            $ref: '#/definitions/Registreringsunderlagkvalitettyp'
+        aktiv:
+          type: boolean
+          description: Anger om registreringsunderlagtypen är aktiv (true) och kan användas vid registrering.
+          example: true
+        sorteringsordning:
+          type: integer
+          description: Anger ordning för sortering. (Ascending sortorder)
+          example: 10
+
+  Registreringsunderlagkvalitettyp:
+      description: Objektrepresentation för en registreringsunderlagkvalitettyp.
+      type: object
+      properties:
+        registreringsunderlagkvalitettyp_id:
+          type: integer
+          description: Anger stabil identitet för en registreringsunderlagkvalitettyp.
+          example: 101
+        namn:
+          type: string
+          description: Anger namnet för angiven registreringsunderlagkvalitettyp (lämpligt för presentation).
+          example: 'Skala 1:5000'
+        default_kvalitet:
+          type: boolean
+          description: Anger om registreringsunderlagkvalitettypen är defaultval som
+            kvalitetstyp för det aktuella registreringsunderlaget eller ej.
+          example: false
+        aktiv:
+          type: boolean
+          description: Anger om registreringsunderlagkvalitettypen är aktiv (true) och kan
+            användas vid registrering.
+          example: true
+        sorteringsordning:
+          type: integer
+          description: Anger ordning för sortering. (Ascending sortorder)
+          example: 40
+
+  Skadestatus:
+    description: Objektrepresentation för en skadestatusinstans.
+    type: object
+    properties:
+      skadestatustyp_id:
+        type: integer
+        description: Anger identiteten för angiven skadestatus.
+        example: 1
+      skadestatus_kommentar:
+        type: string
+        description: Anger kommentar till lämningens angivna skadestatus.
+
+  Skadestatustyp:
+    description: Objektrepresentation för en skadestatustyp.
+    type: object
+    properties:
+      skadestatustyp_id:
+        type: integer
+        description: Anger stabil identitet för skadestatustypen.
+        example: 0
+      namn:
+        type: string
+        description: Anger namnet för angiven skadestatus (lämpligt för presentation).
+        example: Ringa åverkan
+      beskrivning:
+        type: string
+        description: Anger beskrivning för angivet skadestatusvärde (lämpligt för hjälptext). 
+        example: Ringa åverkan
+      sorteringsordning:
+        type: integer
+        description: Anger logisk ordning. (Ascending sortorder)
+        example: 20
+      aktiv:
+        type: boolean
+        description: Anger om skadestatustypen är aktiv (true) och kan användas vid registrering.
+        example: true
+
+  Undersokningsstatus:
+    description: Objektrepresentation för en undersökningsstatusinstans.
+    type: object
+    properties:
+      undersokningsstatustyp_id:
+        type: integer
+        description: Anger identiteten för angiven undersokningsstatus.
+        example: 1
+      undersokningsstatus_kommentar:
+        type: string
+        description: Anger kommentar till lämningens angivna undersokningsstatus.
+
+  Undersokningsstatustyp:
+    description: Objektrepresentation för en undersökningsstatustyp.
+    type: object
+    properties:
+      undersokningsstatustyp_id:
+        type: integer
+        description: Anger stabil identitet för undersökningsstatustypen.
+        example: 1
+      namn:
+        type: string
+        description: Anger namnet för angiven undersökningsstatustyp (lämpligt för
+          presentation). 
+        example: Helt undersökt
+      beskrivning:
+        type: string
+        description: Anger beskrivning för angiven undersökningsstatustyp. (lämpligt för hjälptext).
+        example: Helt undersökt (och borttagen)
+      sorteringsordning:
+        type: integer
+        description: Anger logisk ordning. (Ascending sortorder)
+        example: 30
+      aktiv:
+        type: boolean
+        description: Anger om undersökningsstatustypen är aktiv (true) och kan användas vid
+          registrering.
+        example: true  
+        
+  Uppgiftslamnare:
+    description: Objektrepresentation för en uppgiftslamnare referens.
+    type: object
+    properties:
+      namn:
+        type: string
+        maxLength: 300
+        description: Anger namnet på uppgiftslämnaren.
+        example: Bengt Andersson
+        
+  FeatureCollectionProjektomrade:
+    description: Anger geografisk utbredning för en projektyta i ett fältprojekt.
+      (Härstammar från ett s.k. undersökningsområde).
+      Ytan anges i form av ett objekt av typen
+      "http://geojson.org/geojson-spec.html#feature-collection-objects". Den
+      geometrityp som ska anges ska vara av någon av typerna;
+      <br>
+      - Polygon ("http://geojson.org/geojson-spec.html#polygon")<br>
+      - Multipolygon ("http://geojson.org/geojson-spec.html#multipolygon")<br>
+      - Linestring ("http://geojson.org/geojson-spec.html#linestring")<br>
+      - MultiLinestring ("http://geojson.org/geojson-spec.html#multilinestring")<br>
+      <br>
+      Undantag kastas om någon annan geometrityp skickas in. <br><br>
+      OBS. Swagger kan inte i dagsläget uttrycka GeoJSON fullt ut. En anledning
+      är att coordiantes för typen MultiPolygon består av en till nivå och
+      Swagger klarar inte av oneOf i schemabeskrivning. Därfär är den vanligate
+      användingsfallet med Polygon speccat även fast MultiPolygon stöds. Detta
+      medför att Swagger Editor gör fel om ett område med MultiPolygon klistras
+      in.
+    type: object
+    required:
+      - type
+    additionalProperties: true
+    properties:
+      type:
+        type: string
+        enum:
+          - FeatureCollection
+      crs:
+        type: object
+        required:
+          - type
+        properties:
+          type:
+            type: string
+            enum:
+              - name
+          properties:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                description: 'Anger koordinatystem för projektytan.'
+                example: EPSG:3006
+      features:
+        type: array
+        items:
+          type: object
+          required:
+            - type
+          properties:
+            type:
+              type: string
+              enum:
+                - Feature
+            properties:
+              type: object
+              additionalProperties: true
+            geometry:
+              type: object
+              required:
+                - type
+                - coordinates
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - Polygon
+                    - MultiPolygon
+                    - LineString
+                    - MultiLineString
+                coordinates:
+                  additionalProperties: true
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: number
