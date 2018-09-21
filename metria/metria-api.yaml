@@ -7,26 +7,23 @@ info:
     
     # Utestående frågor
     Nedan listas frågor som behöver redas ut med Metria.
-    * Metadata (20180905)
-    Resursen POST /metadata nedan förutsätter att Metrias Fältfångssystem har en metadatauppsättning för samtliga projekt.
-    Är det korrekt uppfattat att det är så? Och i så fall, när ska då metadatadefinitioner tryckas ut?  
-    Alternativet är att varje projekt har en egen uppsättning av metadata. Då blir resursen istället POST /projekt/{projekt_id}/metadata
-    Vad gäller? 
     
-    * Hur hantera fältordningen för lämningsattribut?
-    Det som behöver klargöras är i vilken ordning fältattributen ska registreras i fältverktyget.
-    Inmatningsordningen som attributen ska registreras i framgår INTE i api:et. 
-    Detta behöver formuleras vid sidan av api:et - alternativt att det byggs in i API:et på något sätt.
-    Metria och RAÄ får komma överens gemensamt vad som gäller.
+    * (20180918) Förslag - ny endpoint: DELETE /faltsession/{faltsession_id}/lamning  - 
+     Tar emot en array av lämningar som ska raderas från ett befintligt faltsession
+     VS vill ha möjligheten att i ett pågående faltsession (fältsession) kunna ta tillbaka en del lämningar och därefter radera
+     dessa från projeketet.
     
-    * Read-only attribut
-    I API-definitionerna nedan har ett antal attribut märkts upp i kommentaren med (read-only)
-    Dessa attribut är attribut som sätts av lämningsregistret (RAÄ) och ska inte kunna redigeras i fältfångtsverktyget. 
-    
-    * Sorteringsordning för metadataattribut
-    Definierade metadataattribut har en inbyggd sorteringsordning som ska användas i fältfångstverktyget.
-    Värdet används för att hantera i vilken ordning värden ska presenteras i när man t ex ska välja ett värde i en dropdown. 
-    Se exempelobjekt - Skadestatustyp.sorteringsordning 
+    * Förslag - ny endpoint: GET /organisation - listar alla registerarade organisationer i Metria Fältserver.
+      Returnerar en lista bestående av ett organisationsobjeket med organisationsnummer och organisationsnamn.
+      Nu kan vi hämta en angiven organisation - då känns det naturligt att kunna lista alla definierade
+      
+    * Utökad svar på endpoint GET /organisation/{organisations_id} 
+      I förslaget nedan returneras bara i svaret namn på organisation samt organisationsnumret.
+      Kan man få med mer information här? T ex;
+       aktiv boolean: anger om organisationen är aktiv eller ej.
+       användare: lista av definierade användaridentiteter kopplade till organisationen?
+       Vilka ytterliggare attribut finns hos Metria vi är intresserade av?! 
+       T ex kopplade användare till organisationen och deras giltighetstid?
      
   contact:
     url: https://metria.se
@@ -68,10 +65,10 @@ paths:
       tags:
         - Metadata
 
-  /organisation/{organisation_id}/projekt:
+  /organisation/{organisation_id}:
     get:
-      summary: Returnerar en lista av fältprojekt för angiven organisation.
-      description: Returnerar en lista av fältprojekt för angiven organisation.
+      summary: Returnerar statusinformation om en upplagd organisation i Metrias fältserver.
+      description: Returnerar statusinformation om en upplagd organisation i Metrias fältserver.
       parameters:
         - name: organisation_id
           in: path
@@ -82,11 +79,11 @@ paths:
         - application/json
       responses:
         '200':
-          description: Lista med fältprojekt registrerade för angiven organisation.
+          description: Returnerar statusinformation om organisationen.
           schema:
             type: array
             items:
-              $ref: '#/definitions/Projekt'
+              $ref: '#/definitions/Organisation'
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
@@ -102,27 +99,62 @@ paths:
       tags:
          - Organisation 
 
-  /projekt:
-    post:
-      summary: Skapar ett fältregistreringsprojekt.
-      description: Skapar ett fältregistreringsprojekt.
+
+  /organisation/{organisation_id}/faltsession:
+    get:
+      summary: Returnerar en lista av faltsessioner för angiven organisation.
+      description: Returnerar en lista av fältsessioner för angiven organisation.
       parameters:
-        - name: projekt
+        - name: organisation_id
+          in: path
+          required: true
+          type: string
+          description: Organisationens orgnr inkl. prefix (16) för juridiskperson. Personnummer för enskild firma.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Lista med fältsessioner registrerade för angiven organisation.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Faltsession'
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad (autentiserad).
+          schema:
+            $ref: '#/definitions/Error'  
+        '404':
+          description: (Not found). Angiven post kunde inte hittas.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+         - Organisation 
+
+  /faltsession:
+    post:
+      summary: Skapar en fältsession.
+      description: Skapar en fältsession.
+      parameters:
+        - name: faltsession
           in: body
           required: true
           schema:
-            $ref: '#/definitions/ProjektPost'
+            $ref: '#/definitions/FaltsessionPost'
       produces:
         - application/json
       responses:
         '201':
-          description: Anger absolut URI till det skapade projektet.
+          description: Anger absolut URI till det skapade fältsessionen.
           headers:
             Location:
               type: string
-              description: Anger absolut uri till posten. Exempel, .../projekt/dd179942-9381-48d0-91cf-da00a362f4b9
+              description: Anger absolut uri till posten. Exempel, .../faltsession/dd179942-9381-48d0-91cf-da00a362f4b9
           schema:
-            $ref: '#/definitions/Projekt'
+            $ref: '#/definitions/Faltsession'
         '400':
           description: (Bad request). Felaktigt indata angavs för posten (typiskt valideringsfel).
           schema:
@@ -137,29 +169,29 @@ paths:
           schema:
             $ref: '#/definitions/Error'
       tags:
-        - Projekt
+        - Fältsession
   
-  /projekt/{projekt_id}:
+  /faltsession/{faltsession_id}:
     get:
-      summary: Hämtar projektinformation för angivet fältregistreringsprojekt.
-      description: Hämtar projektinformation för angivet fältregistreringsprojekt. <br>
-        Notera att endast metadata kring projektet returneras - inga lämningar ingår. 
-        För att hämta lämningarna för projektet.
+      summary: Hämtar fältsessionsinformation för angiven fältsession.
+      description: Hämtar fältsessionsinformation för angiven fältsession. <br>
+        Notera att endast metadata kring fältsessionen returneras - inga lämningar ingår. 
+        För att hämta lämningarna för fältsessionen.
       parameters:
-        - name: projekt_id
+        - name: faltsession_id
           in: path
           required: true
           type: string
-          description: Anger identiten för projektet (UUID).
+          description: Anger identiten för fältsessionen (UUID).
       produces:
         - application/json
       responses:
         '200':
-          description: Ett fältregistreringsprojekt.
+          description: En fältsession.
           schema:
             type: array
             items:
-              $ref: '#/definitions/Projekt'
+              $ref: '#/definitions/Faltsession'
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
@@ -173,21 +205,21 @@ paths:
           schema:
             $ref: '#/definitions/Error'
       tags:
-        - Projekt
+        - Fältsession
         
     delete:
-      summary: Raderar ett fältregistreringsprojekt.
-      description: Raderar ett fältregistreringsprojekt samt
+      summary: Raderar en fältsession.
+      description: Raderar en fältsession samt alla ev. lämningar ingående i sessionen.
       parameters:
-        - name: projekt_id
+        - name: faltsession_id
           in: path
           format: uuid
           required: true
           type: string
-          description: UUID för ett projekt
+          description: UUID för ett faltsession
       responses:
         '204':
-          description: (No Content). Projektet raderades. Inget innehåll returneras.
+          description: (No Content). Faltsessionen raderades. Inget innehåll returneras.
         '400':
           description: (Bad request). Felaktig indata.
           schema:
@@ -205,26 +237,26 @@ paths:
           schema:
             $ref: '#/definitions/Error'
       tags:
-        - Projekt
+        - Fältsession
 
-  /projekt/{projekt_id}/lamning:
+  /faltsession/{faltsession_id}/lamning:
     get:
-      summary: Hämtar lista med uppdaterade lämningar för angivet projekt.
+      summary: Hämtar lista med uppdaterade lämningar för angivet faltsession.
       description: Hämta en lista av lämningar som uppdaterats eller nyregistrerats i fält.
-        Per default returnernas fältprojektets samtliga lämningar.
+        Per default returnernas fältsessionens samtliga lämningar.
         Tjänsten kan anropas med parametern 'forandringar_sedan' som argument.för att hämta ett delta av lämningar.
         Tjänsten returnerar då endast de lämningar som uppdaterats sedan angiven tidpunkt.        
       parameters:
-        - name: projekt_id
+        - name: faltsession_id
           in: path
           required: true
           type: string  
-          description: Anger identitet (UUID) för ett projekt.
+          description: Anger identitet (UUID) för en fältsession.
         - in: query
           name: forandringar_sedan
           type: string
           format: dateTime
-          description: Anger tidpunkten för att hämta endast de lämningar som förändrats i projektet sedan angiven tidpunkt. 
+          description: Anger tidpunkten för att hämta endast de lämningar som förändrats i fältsessionen sedan angiven tidpunkt. 
             Tidpunkt anges enligt defined by full-date - RFC3339.
             Se RFC3339 (Internet Date/Time Format) http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
             Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
@@ -253,27 +285,27 @@ paths:
             $ref: '#/definitions/Error'
       tags:
         - Lämning
-        - Projekt
+        - Fältsession
         
     post:
-      summary: Adderar en lista av lämningar till angivet fältprojekt.
-      description: Adderar en lista av lämningar till angivet fältprojekt. 
+      summary: Adderar en lista av lämningar till angivet fältsession.
+      description: Adderar en lista av lämningar till angivet fältsession. 
       parameters:
-        - name: projekt_id
+        - name: faltsession_id
           in: path
           required: true
           type: string
-          description: Anger identitet (UUID) för ett fältprojekt.
+          description: Anger identitet (UUID) för ett fältsession.
         - name: faltLamningPost
           in: body
           required: true
           schema:
-            $ref: '#/definitions/AdderaFaltlamningPost'  
+            $ref: '#/definitions/FaltlamningPost'
       produces:
         - application/json
       responses:
         '201':
-          description: (Created). Angivna lämningar skapades i fältprojektet. En tom body returneras.
+          description: (Created). Angivna lämningar skapades i faltsessionen. En tom body returneras.
         '400':
           description: (Bad request). Felaktigt indata angavs för posten (typiskt valideringsfel).
           schema:
@@ -283,11 +315,11 @@ paths:
           schema:
             $ref: '#/definitions/Error'
         '403':
-          description: (Forbidden). Användaren saknar behörighet för angivet projekt.
+          description: (Forbidden). Användaren saknar behörighet för angivet fältsession.
           schema:
             $ref: '#/definitions/Error'              
         '404':
-          description: Angivet projekt_id kunde inte hittas.
+          description: Angivet faltsession_id kunde inte hittas.
           schema:
             $ref: '#/definitions/Error'
         '500':
@@ -296,8 +328,49 @@ paths:
             $ref: '#/definitions/Error'            
       tags:
         - Lämning
-        - Projekt
+        - Fältsession
 
+# TODO - överväg att göra om till en radering av enstaka lämningar.
+# Hur ska vi hantera om en angiven lämning inte kan tas bort?         
+# Gör vi då rollback på alla angivna lämningar?
+    delete:
+      summary: Raderar angivna lämningar från en fältsession.
+      description: Raderar angivna lämningar från angivet fältsession.
+      parameters:
+        - name: faltsession_id
+          in: path
+          format: uuid
+          required: true
+          type: string
+          description: UUID för en fältsession
+        - name: faltLamningPost
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FaltlamningDelete'  
+      responses:
+        '204':
+          description: (No Content). Angivna lämningar i fältsessionen raderades. Inget innehåll returneras.
+        '400':
+          description: (Bad request). Felaktig indata.
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad.
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: (Not Found). Angiven post kunde inte hittas.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: (Internal Server Error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Lämning
+        - Fältsession
+        
   /echo/{message}:
     get:
       summary: Tjänst avsedd för att utföra sambandstest.
@@ -327,17 +400,6 @@ paths:
         - Övriga tjänster
 
 definitions:
-
-  AdderaFaltlamningPost:
-    description: Parameterobjekt för att addera lämningar till ett fältprojekt.
-    type: object
-    properties:
-      faltLamning:
-        description: 
-          Array innehållande de lamningar som ska adderas till angivet projekt.
-        type: array
-        items:
-          $ref: '#/definitions/Faltlamning'
 
   Aktualitetstatus:
     description: Objektrepresentation för en aktualitetstatusinstans.
@@ -539,7 +601,7 @@ definitions:
         example: '2017-10-30 08:00:18'
 
   Faltlamning:
-    description: Objektrepresentation för en lämningspost med de attribut som kan registreras i fält.
+    description: Objektrepresentation för en fältlämning innehållande de attribut som kan registreras i fält.
     type: object
     properties:
       lamning_id:
@@ -653,6 +715,30 @@ definitions:
             Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
           example: '2017-10-30 08:00:18'
 
+  FaltlamningPost:
+    description: Parameterobjekt för att addera lämningar kopplade till en fältsession.
+    type: object
+    properties:
+      faltLamning:
+        description: 
+          Array innehållande de lamningar som ska adderas till angiven fältsession.
+        type: array
+        items:
+          $ref: '#/definitions/Faltlamning'
+          
+  FaltlamningDelete:
+    description: Parameterobjekt för att radera lämningar kopplade till en fältsession.
+    type: object
+    properties:
+      faltLamning:
+        description: 
+          Array innehållande identiteter(uuid) till de lämningar som ska raderas från en fältsession. 
+        type: array
+        items:
+          type: string
+          format: uuid      
+          example: ccf0a7f9-1f4c-421f-a321-0e36daea43eb 
+  
   FeatureCollectionLamning:
     description: Anger den geografiska utbredningen för en lämnings geometri i form av ett objekt av typen "http://geojson.org/geojson-spec.html#feature-collection-objects".  
       De geometrityper som kan förekomma är av någon av typerna:<br> <br> 
@@ -890,11 +976,11 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Registreringsunderlagtyp'
-      registreringsunderlagskvalitettyp:
-        description: Anger metadata definitioner avseende registreringsunderlagskvalitet.        
-        type: array
-        items:
-          $ref: '#/definitions/Registreringsunderlagkvalitettyp'
+#      registreringsunderlagskvalitettyp:
+#        description: Anger metadata definitioner avseende registreringsunderlagskvalitet.        
+#        type: array
+#        items:
+#          $ref: '#/definitions/Registreringsunderlagkvalitettyp'
       skadestatus:
         description: Anger metadata definitioner avseende skadestatus.        
         type: array
@@ -941,9 +1027,27 @@ definitions:
         example: 'Vid inmätningen använde GPS:en 22 satelliter.'
       geometri:
         $ref: '#/definitions/FeatureCollectionLamning'
+  
+  Organisation:
+    description: Objektrepresentation av ett organisation i Metrias fältfångstsystem.
+    type: object
+    required:
+      - organisation_id
+      - namn
+    properties:
+      organisation_id:
+        type: string
+        description: Anger organisationsnumret för organisationen.
+        minLength: 12
+        maxLength: 12
+        example: '165544332211'        
+      namn:
+        type: string
+        description: Anger organisationens namn.
+        example: 'Arkeolog AB'
           
-  Projekt:
-    description: Objektrepresentation av ett fältregistreringsprojekt.
+  Faltsession:
+    description: Objektrepresentation av en fältsession.
     type: object
     required:
       - organisation_id
@@ -952,20 +1056,20 @@ definitions:
     properties:
       organisation_id:
         type: string
-        description: Anger organisationsnumret för den organisation som ett projekt tillhör.
+        description: Anger organisationsnumret för den organisation som en fältsession tillhör.
         minLength: 12
         maxLength: 12
         example: '165544332211'        
       namn:
         type: string
         example: 'Qwerty'
-        description: Anger projektets namn.
+        description: Anger fältsessionens namn.
       beskrivning:
         type: string
-        example: 'Ett fältprojekt...'
-        description: Kort beskrivning av projekt.
-      projektomrade:
-        $ref: '#/definitions/FeatureCollectionProjektomrade' 
+        example: 'Ett fältsession...'
+        description: Kort beskrivning av fältsessionen.
+      faltsessionsomrade:
+        $ref: '#/definitions/FeatureCollectionFaltsessionomrade' 
       skapad_tidpunkt:
           type: string
           format: date-time
@@ -975,8 +1079,8 @@ definitions:
             Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
           example: '2017-10-30 08:00:18'      
          
-  ProjektPost:
-    description: Parameterobjekt för att skapa ett fältregistreringsprojekt.
+  FaltsessionPost:
+    description: Parameterobjekt för att skapa en fältsession.
     type: object
     required:
       - organisation_id
@@ -985,20 +1089,20 @@ definitions:
     properties:
       organisation_id:
         type: string
-        description: Anger organisationsnumret för den organisation som ett projekt tillhör.
+        description: Anger organisationsnumret för den organisation som en fältsession tillhör.
         minLength: 12
         maxLength: 12
         example: '165544332211'        
       namn:
         type: string
         example: 'Qwerty'
-        description: Anger projektets namn.
+        description: Anger fältsessionens namn.
       beskrivning:
         type: string
-        example: 'Ett fältprojekt...'
-        description: Kort beskrivning av projekt.
-      projektomrade:
-        $ref: '#/definitions/FeatureCollectionProjektomrade'
+        example: 'Ett fältsession...'
+        description: Kort beskrivning av fältsessionen.
+      faltsessionsomrade:
+        $ref: '#/definitions/FeatureCollectionFaltsessionomrade'
 
   Registreringsunderlagtyp:
       description: Objektrepresentation för en registreringsunderlagtyp.
@@ -1139,8 +1243,8 @@ definitions:
         description: Anger namnet på uppgiftslämnaren.
         example: Bengt Andersson
         
-  FeatureCollectionProjektomrade:
-    description: Anger geografisk utbredning för en projektyta i ett fältprojekt.
+  FeatureCollectionFaltsessionomrade:
+    description: Anger geografisk utbredning för en yta i en fältsession.
       (Härstammar från ett s.k. undersökningsområde).
       Ytan anges i form av ett objekt av typen
       "http://geojson.org/geojson-spec.html#feature-collection-objects". Den
@@ -1183,7 +1287,7 @@ definitions:
             properties:
               name:
                 type: string
-                description: 'Anger koordinatystem för projektytan.'
+                description: 'Anger koordinatystem för fältsessionens yta.'
                 example: EPSG:3006
       features:
         type: array
