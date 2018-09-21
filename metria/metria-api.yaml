@@ -330,9 +330,6 @@ paths:
         - Lämning
         - Fältsession
 
-# TODO - överväg att göra om till en radering av enstaka lämningar.
-# Hur ska vi hantera om en angiven lämning inte kan tas bort?         
-# Gör vi då rollback på alla angivna lämningar?
     delete:
       summary: Raderar angivna lämningar från en fältsession.
       description: Raderar angivna lämningar från angivet fältsession.
