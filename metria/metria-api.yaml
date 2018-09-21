@@ -7,23 +7,20 @@ info:
     
     # Utestående frågor
     Nedan listas frågor som behöver redas ut med Metria.
-    
-    * (20180918) Förslag - ny endpoint: DELETE /faltsession/{faltsession_id}/lamning  - 
-     Tar emot en array av lämningar som ska raderas från ett befintligt faltsession
-     VS vill ha möjligheten att i ett pågående faltsession (fältsession) kunna ta tillbaka en del lämningar och därefter radera
-     dessa från projeketet.
-    
-    * Förslag - ny endpoint: GET /organisation - listar alla registerarade organisationer i Metria Fältserver.
-      Returnerar en lista bestående av ett organisationsobjeket med organisationsnummer och organisationsnamn.
-      Nu kan vi hämta en angiven organisation - då känns det naturligt att kunna lista alla definierade
-      
-    * Utökad svar på endpoint GET /organisation/{organisations_id} 
+          
+    * Utökad svar på endpoint GET /organisation/{organisations_id} (20180921) 
       I förslaget nedan returneras bara i svaret namn på organisation samt organisationsnumret.
       Kan man få med mer information här? T ex;
        aktiv boolean: anger om organisationen är aktiv eller ej.
        användare: lista av definierade användaridentiteter kopplade till organisationen?
        Vilka ytterliggare attribut finns hos Metria vi är intresserade av?! 
        T ex kopplade användare till organisationen och deras giltighetstid?
+       
+    * Lägg till attribut Faltlamningpost.kvalitetsmarkningtyp_id (20190921)
+      Stöd för detta attribut har ännu inte lagts till i lamning-api:et.
+      Detta ska införas i lämningsapi:et samt även stödet för metadatadefinitionen för kvalitetsmarkningstypen.
+      Först när detta är implementerat i lämning-api:et ska det även införas i Metrias API:et.
+      Komplettera även det i detta som attribut i payloaden för POST /metadata!    !    
      
   contact:
     url: https://metria.se
@@ -64,6 +61,30 @@ paths:
             $ref: '#/definitions/Error'
       tags:
         - Metadata
+
+  /organisation:
+    get:
+      summary: Listar alla definerade organisationer i Metrias fältserver.
+      description: Listar alla definerade organisationer i Metrias fältserver.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Returnerar en lista av organisationer i alfabetisk ordning.
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/OrganisationIndex'
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad (autentiserad).
+          schema:
+            $ref: '#/definitions/Error'  
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error' 
+      tags:
+        - Organisation
 
   /organisation/{organisation_id}:
     get:
@@ -136,8 +157,8 @@ paths:
 
   /faltsession:
     post:
-      summary: Skapar en fältsession.
-      description: Skapar en fältsession.
+      summary: Skapar en fältsession och tilldelar angiven organisation.
+      description: Skapar en fältsession och tilldelar angiven organisation.
       parameters:
         - name: faltsession
           in: body
@@ -1027,6 +1048,25 @@ definitions:
   
   Organisation:
     description: Objektrepresentation av ett organisation i Metrias fältfångstsystem.
+    type: object
+    required:
+      - organisation_id
+      - namn
+    properties:
+      organisation_id:
+        type: string
+        description: Anger organisationsnumret för organisationen.
+        minLength: 12
+        maxLength: 12
+        example: '165544332211'        
+      namn:
+        type: string
+        description: Anger organisationens namn.
+        example: 'Arkeolog AB'
+  
+  OrganisationIndex:
+    description: ->
+      Objektrepresentation av ett organisation i Metrias fältfångstsystem i 'index' format (lämpligt för rendering i lista).
     type: object
     required:
       - organisation_id
