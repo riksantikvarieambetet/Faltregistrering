@@ -952,16 +952,16 @@ definitions:
           minimum: 0.0001
           maximum: 9999.9999
           example: 0.025
+        sorteringsordning:
+          type: integer
+          description: Anger ordning för sortering. (Ascending sortorder)
+          example: 10
         aktiv:
           type: boolean
           description: >-
             Anger om mätmetodtypen är aktiv (true) och kan användas vid
             registrering.
           example: true
-        sorteringsordning:
-          type: integer
-          description: Anger ordning för sortering. (Ascending sortorder)
-          example: 10
 
   Metadata:
     description: Objektrepresentation av metadatadefinitioner avsedd att användas vid fältfångst av lämningar.
@@ -1158,14 +1158,14 @@ definitions:
           type: array
           items:
             $ref: '#/definitions/Registreringsunderlagkvalitettyp'
-        aktiv:
-          type: boolean
-          description: Anger om registreringsunderlagtypen är aktiv (true) och kan användas vid registrering.
-          example: true
         sorteringsordning:
           type: integer
           description: Anger ordning för sortering. (Ascending sortorder)
           example: 10
+        aktiv:
+          type: boolean
+          description: Anger om registreringsunderlagtypen är aktiv (true) och kan användas vid registrering.
+          example: true
 
   Registreringsunderlagkvalitettyp:
       description: Objektrepresentation för en registreringsunderlagkvalitettyp.
@@ -1184,15 +1184,15 @@ definitions:
           description: Anger om registreringsunderlagkvalitettypen är defaultval som
             kvalitetstyp för det aktuella registreringsunderlaget eller ej.
           example: false
+        sorteringsordning:
+          type: integer
+          description: Anger ordning för sortering. (Ascending sortorder)
+          example: 40
         aktiv:
           type: boolean
           description: Anger om registreringsunderlagkvalitettypen är aktiv (true) och kan
             användas vid registrering.
           example: true
-        sorteringsordning:
-          type: integer
-          description: Anger ordning för sortering. (Ascending sortorder)
-          example: 40
 
   Skadestatus:
     description: Objektrepresentation för en skadestatusinstans.
