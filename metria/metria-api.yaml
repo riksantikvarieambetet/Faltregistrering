@@ -994,11 +994,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Registreringsunderlagtyp'
-#      registreringsunderlagskvalitettyp:
-#        description: Anger metadata definitioner avseende registreringsunderlagskvalitet.        
-#        type: array
-#        items:
-#          $ref: '#/definitions/Registreringsunderlagkvalitettyp'
       skadestatus:
         description: Anger metadata definitioner avseende skadestatus.        
         type: array
@@ -1089,7 +1084,6 @@ definitions:
     required:
       - organisation_id
       - namn
-      - beskrivning
     properties:
       organisation_id:
         type: string
