@@ -20,7 +20,10 @@ info:
       Stöd för detta attribut har ännu inte lagts till i lamning-api:et.
       Detta ska införas i lämningsapi:et samt även stödet för metadatadefinitionen för kvalitetsmarkningstypen.
       Först när detta är implementerat i lämning-api:et ska det även införas i Metrias API:et.
-      Komplettera även det i detta som attribut i payloaden för POST /metadata!    !    
+      Komplettera även det i detta som attribut i payloaden för POST /metadata!
+
+    * Utöka swagger med POST metadatapayload med namnet på rek. antikv. bedömning
+    * Ta bort uri för lämningstyp i metadatapayload.  
      
   contact:
     url: https://metria.se
@@ -619,8 +622,16 @@ definitions:
         example: '2017-10-30 08:00:18'
 
   Faltlamning:
-    description: Objektrepresentation för en fältlämning innehållande de attribut som kan registreras i fält.
+    description: |
+      Objektrepresentation för en fältlämning innehållande de attribut som kan registreras i fält.
+      Notera att attribut uppmärka som obligatoriska avser de attribut som är obligatoriska när en lämning skickas 
+      från Fornreg till Fältservern.
     type: object
+    required:
+      - lamning_id
+      - lamningsnummer
+      - lamningstyp_id
+      - nuvarande_lage
     properties:
       lamning_id:
         type: string
@@ -1006,8 +1017,17 @@ definitions:
           $ref: '#/definitions/Undersokningsstatustyp'                 
 
   NuvarandeLage:
-    description: Objektrepresentation för en lämnings "nuvarande läge", dess geometri och kvalitetsegenskaper för hur inmätningen av lämningen genomfördes.
+    description: | 
+      Objektrepresentation för en lämnings "nuvarande läge", dess geometri och kvalitetsegenskaper för hur inmätningen av lämningen genomfördes.
+      Notera att attribut uppmärka som obligatoriska avser de attribut som är obligatoriska när en lämning skickas 
+      från Fornreg till Fältservern.
     type: object
+    required:
+      - registreringsunderlagtyp_id
+      - registreringsunderlagtypkvalitettyp_id
+      - matmetodtyp_id
+      - geometri
+      - felmarginal_meter
     properties:
       registreringsunderlagtyp_id:
         type: integer
@@ -1116,7 +1136,6 @@ definitions:
     required:
       - organisation_id
       - namn
-      - beskrivning
     properties:
       organisation_id:
         type: string
