@@ -777,6 +777,8 @@ definitions:
     type: object
     required:
       - type
+      - crs
+      - features
     additionalProperties: true
     properties:
       type:
@@ -807,6 +809,9 @@ definitions:
           type: object
           required:
             - type
+            - id
+            - properties
+            - geometry
           properties:
             type:
               type: string
@@ -817,6 +822,27 @@ definitions:
               description: Anger unik och stabil identitet (geometrinummer) för aktuell feature. (read-only) <br> 
                 Geometrinumret har syntaxen; Lämningsnummer-<lämningsgeometrilöpnummer>                          
               example: 'L2017:105-4'
+            geometry:
+              type: object
+              required:
+                - type
+                - coordinates
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - Point
+                    - Polygon
+                    - LineString
+                coordinates:
+                  additionalProperties: true
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: number  
             properties:
               type: object
               additionalProperties: true
