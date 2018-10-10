@@ -1128,15 +1128,21 @@ definitions:
     description: Objektrepresentation av en fältsession.
     type: object
     required:
+      - faltsession_id
       - organisation_id
       - namn
     properties:
+      faltsession_id:
+        type: string
+        format: uuid
+        description: Anger identiten för fältsessionen.
+        example: 255c3b03-cf96-48b2-ab5a-fa5b4016be04
       organisation_id:
         type: string
         description: Anger organisationsnumret för den organisation som en fältsession tillhör.
         minLength: 12
         maxLength: 12
-        example: '165544332211'        
+        example: 165544332211
       namn:
         type: string
         example: 'Qwerty'
