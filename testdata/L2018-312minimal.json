@@ -1,0 +1,39 @@
+ {
+ 	"faltLamning": {
+ 		"lamning_id": "a94ed512-b50d-428c-be99-17c24bb4bbac",
+ 		"lamningsnummer": "L2018:313",
+ 		"lamningstyp_id": 1001,
+ 		"nuvarande_lage": {
+ 			"registreringsunderlagtyp_id": 100,
+ 			"registreringsunderlagkvalitettyp_id": 201,
+ 			"matmetodtyp_id": 1,
+ 			"felmarginal_meter": 7,
+ 			"geometri": {
+ 				"type": "FeatureCollection",
+ 				"crs": {
+ 					"type": "name",
+ 					"properties": {
+ 						"name": "urn:ogc:def:crs:EPSG::3006"
+ 					}
+ 				},
+ 				"features": [{
+ 					"type": "Feature",
+ 					"id": "L2018:313-1",
+					"geometry": {
+ 						"type": "Polygon",
+ 						"coordinates": [
+ 							[
+ 								[649565.66954662, 6649603.7357998],
+ 								[649688.752894, 6649660.22376166],
+ 								[649786.86730605, 6649430.04357485],
+ 								[649646.99669488, 6649343.52326056],
+ 								[649565.66954662, 6649603.7357998]
+ 							]
+ 						]
+ 					},
+ 					"properties": {}
+ 				}]
+ 			}
+ 		}
+ 	}
+ }
