@@ -1,0 +1,62 @@
+{
+	"faltLamning": {
+		"lamning_id": "a0e19b50-c193-43fa-9285-53af3372b828",
+		"lamningsnummer": "L2018:1179",
+		"lamningstyp_id": 1038,
+		"beskrivning": "Fångstgård - Varg - Norrköping - 40. Vrånga ",
+		"egenskaper": {
+			"egenskapstyp_id": 10027,
+			"egenskapstyp_namn": "Bytesdjur",
+			"egenskapsvarden": [{
+				"egenskapsvarde_id": 138,
+				"egenskapsvarde_namn": "Varg"
+			}],
+			"ingaendelamningar": [],
+			"skadestatus": {
+				"skadestatustyp_id": 4
+			},
+			"undersokningsstatus": {
+				"undersokningsstatustyp_id": 3
+			},
+			"aktualitetstatus": {
+				"aktualitetstatustyp_id": 1
+			},
+			"nuvarande_lage": {
+				"registreringsunderlagtyp_id": 101,
+				"registreringsunderlagkvalitettyp_id": 204,
+				"matmetodtyp_id": 4,
+				"felmarginal_meter": 0.025,
+				"geometri": {
+					"type": "FeatureCollection",
+					"crs": {
+						"type": "name",
+						"properties": {
+							"name": "EPSG:3006"
+						}
+					},
+					"features": [{
+						"type": "Feature",
+						"id": "L2018:1179-1",
+						"geometry": {
+							"type": "Polygon",
+							"coordinates": [
+								[
+									[592369.8349719, 6612902.84019153],
+									[592435.80826573, 6612921.93325128],
+									[592472.38666474, 6612826.21977386],
+									[592412.03230637, 6612809.75949431],
+									[592382.49733285, 6612865.83174177],
+									[592369.8349719, 6612902.84019153]
+								]
+							]
+						},
+						"properties": {}
+
+
+					}]
+				},
+				"inmatning_kommentar": "Vid inmätningen använde GPS:en 22 satelliter."
+			}
+		}
+	}
+}
