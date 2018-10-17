@@ -113,9 +113,7 @@ paths:
         '200':
           description: Returnerar statusinformation om organisationen.
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Organisation'
+            $ref: '#/definitions/Organisation'
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
