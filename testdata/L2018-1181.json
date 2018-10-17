@@ -1,0 +1,58 @@
+{
+	"faltLamning": {
+		"lamning_id": "9994915c-a6aa-454d-a459-8120c922c55d",
+		"lamningsnummer": "L2018:1181",
+		"tillfallig_arbetsidentitet":"Tillfällig arbetsidentitet",
+		"lamningstyp_id": 1014,
+		"antikvariskbedomningtyp_id":1,
+		"beskrivning": "Västmanland, Skultuna, Tibble\nLämningstyp: Bro\nKonstruktion: Valv\nMaterial: Sten, Stål, Trä\nÖvrig kulturhistorisk lämning\nDGPS\nSjökort\n",
+		"placeringtyp_id": 1,
+		"egenskaper": [54, 56, 57, 58],
+		"ingaendelamningar": [],
+		"skadestatus": {
+			"skadestatustyp_id": 4
+		},
+		"undersokningsstatus": {
+			"undersokningsstatustyp_id": 3
+		},
+		"aktualitetstatus": {
+			"aktualitetstatustyp_id": 1
+		},
+		"nuvarande_lage": {
+			"registreringsunderlagkvalitettyp_id": 210,
+			"matmetodtyp_id": 2,
+			"felmarginal_meter": 2,
+			"geometri": {
+				"type": "FeatureCollection",
+				"crs": {
+					"type": "name",
+					"properties": {
+						"name": "EPSG:3006"
+					}
+				},
+				"features": [{
+					"type": "Feature",
+
+					"geometry": {
+						"type": "Polygon",
+						"coordinates": [
+							[
+								[580627.20814474, 6622009.8251708],
+								[580693.18143857, 6622028.91823055],
+								[580729.75983758, 6621933.20475313],
+								[580669.40547921, 6621916.74447358],
+								[580639.87050569, 6621972.81672104],
+								[580627.20814474, 6622009.8251708]
+							]
+						]
+					},
+					"properties": {}
+
+				}]
+			},
+			"inmatning_kommentar": null
+		},
+		"alternativnamn": [],
+		"uppgiftslamnare_referenser": []
+	}
+}
