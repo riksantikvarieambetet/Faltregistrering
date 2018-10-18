@@ -1,42 +1,18 @@
 swagger: '2.0'
 info:
-  version: 0.1.1
+  version: 0.2.0
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
     
     # Utestående frågor
     Nedan listas frågor som behöver redas ut med Metria.
-          
-    * Utökad svar på endpoint GET /organisation/{organisations_id} (20180921) 
-      I förslaget nedan returneras bara i svaret namn på organisation samt organisationsnumret.
-      Kan man få med mer information här? T ex;
-       aktiv boolean: anger om organisationen är aktiv eller ej.
-       användare: lista av definierade användaridentiteter kopplade till organisationen?
-       Vilka ytterliggare attribut finns hos Metria vi är intresserade av?! 
-       T ex kopplade användare till organisationen och deras giltighetstid?
-       
-    * Lägg till attribut Faltlamningpost.kvalitetsmarkningtyp_id (20190921)
-      Stöd för detta attribut har ännu inte lagts till i lamning-api:et.
-      Detta ska införas i lämningsapi:et samt även stödet för metadatadefinitionen för kvalitetsmarkningstypen.
-      Först när detta är implementerat i lämning-api:et ska det även införas i Metrias API:et.
-      Komplettera även det i detta som attribut i payloaden för POST /metadata!
-
+                 
     * Införa versionsnummer och optimistisk objektlåsning i Metrias api på fältsessionsnivå?! (20181016)
       Dvs - inför ett versionsnummer för en fältsession. När någon förändring på en ingående lämning sker 
       uppdateras versionsnumret. Detta för att unvika problemet att användaren har lagt till ny lämningsinformation 
       ( t ex synkar sin offline enhet) under tiden han tittar på lämninarna i Fornreg. Kolla med Hans! 
-      
-    * Vi kommer antagligen ha behov av att hämta en delmängd av lämningar från fältsessionen. (20181016)
-      I fornreg kommer vi att anropa fältservern och lista alla lämningar i sessionen, nya som befintliga lämningar.
-      Användaren kommer därefter ha möjlighet att få välja ut ett antal lämningar för att synka tillbaka till Fornreg. 
-      Antag att han väljer en lämning. Det känns då lite trubbigt att behöva hämta alla lämningar igen för att kasta bort
-      alla utom en. Diskutera med Hans endpointen 
-     
-    * TODO  GET /metadata returnera versionsnummer och lämningstyplistaversion
-    * TODO POST kvalitetmärkningstyp - Borde inte finnas som metadata! Värdet är ju read only. Vi skulle kunna 
-      skicka värdet i klartext.
-    * TODO lämningsyplistaversion.   
+           
   contact:
     url: https://metria.se
     email: todo@metria.se
@@ -294,17 +270,12 @@ paths:
       tags:
         - Fältsession
         
-# TODO - Endast ett förslag - Diskutera med Hans om denna ska införas!
-# /faltsession{faltsession_id/}/lamning/search eller nåt ditåt...
-  /faltsession/{faltsession_id}/lamning-forslag:
+  /faltsession/{faltsession_id}/lamning/search:
     post:
-      summary: Hämtar lista med lämningar för angiven fältsession.
+      summary: Söker ut och returnerar lista med angivna lämningar för angiven fältsession.
       description: |
-        Hämtar en lista av angiva lämningar för en fältsession.
-        Per default returnernas fältsessionens samtliga lämningar om inget annat anges.
-        Tjänsten kan anropas med parameter 'faltLamning' som argument för att hämta ett valfria lämningar.
-        Tjänsten kan också anropas med parametern 'forandringar_sedan' som argument för att hämta ett delta av lämningar.
-        Tjänsten returnerar då endast de lämningar som uppdaterats sedan angiven tidpunkt.        
+        Söker ut och returnerar lista av angiva lämningar för en fältsession.
+    
       parameters:
         - name: faltsession_id
           in: path
@@ -341,15 +312,15 @@ paths:
       tags:
         - Lämning
         - Fältsession
-        - FÖRSLAG
 
   /faltsession/{faltsession_id}/lamning:
     get:
-      summary: Hämtar lista med lämningar för angiven fältsession.
-      description: Hämtar en lista av lämningar för en fältsession som ev. har uppdaterats eller nyregistrerats i fält.
-        Per default returnernas fältsessionens samtliga lämningar.
-        Tjänsten kan anropas med parametern 'forandringar_sedan' som argument för att hämta ett delta av lämningar.
-        Tjänsten returnerar då endast de lämningar som uppdaterats sedan angiven tidpunkt.        
+      summary: Hämtar lista med lämningar i 'index-format' för angiven fältsession.
+      description: |
+        Hämtar en lista av lämningar i antingen 'index-format' eller kompletta för en fältsession.
+        Per default returneras endast ingående lämningars signifikanta attribut (lamning_id, lamningsnummer, lamningstyp_id, 
+        tillfallig_arbetsidentitet, senast_andrad).
+        Tjänsten kan även anropas med parametern 'komplett' som argument för att hämta kompletta lämningar.
       parameters:
         - name: faltsession_id
           in: path
@@ -357,15 +328,10 @@ paths:
           type: string  
           description: Anger identitet (UUID) för en fältsession.
         - in: query
-          name: forandringar_sedan
-          type: string
-          format: dateTime
-          description: Anger tidpunkten för att hämta endast de lämningar som förändrats i fältsessionen sedan angiven tidpunkt. 
-            Tidpunkt anges enligt defined by full-date - RFC3339.
-            Se RFC3339 (Internet Date/Time Format) http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
-            Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
-            ex; '2017-10-30 08:00:18'
-          required: false  
+          name: komplett
+          type: boolean
+          description: Anger att kompletta lämningar ska returneras (samtliga attribut och geometrier). Ex; komplett=true
+          required: false          
       produces:
         - application/json
       responses:
@@ -737,7 +703,11 @@ definitions:
             Tidpunkt anges enligt defined by full-date - RFC3339.
             Se RFC3339 (Internet Date/Time Format) http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
             Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
-          example: '2017-10-30 08:00:18'      
+          example: '2017-10-30 08:00:18'
+#      version: 
+#        type: integer
+#        description: Anger aktuellt versionsnummer för fältsessionen och dess ingående lämningar.
+#        example: 27            
          
   FaltsessionPost:
     description: Parameterobjekt för att skapa en fältsession.
@@ -754,8 +724,10 @@ definitions:
         example: '165544332211'        
       namn:
         type: string
-        example: 'Qwerty'
         description: Anger fältsessionens namn.
+        maxLength: 33
+        example: '201800205 - Nyskoga'
+        
       beskrivning:
         type: string
         example: 'Ett fältsession...'
@@ -818,7 +790,12 @@ definitions:
       undersokningsstatus:
         $ref: '#/definitions/Undersokningsstatus'    
       skadestatus:
-        $ref: '#/definitions/Skadestatus'   
+        $ref: '#/definitions/Skadestatus'
+      kvalitetsmarkning:
+          type: string
+          description: Anger kvalitetsmärkning för lämningen. (read-only). 
+          maxLength: 255
+          example: 'Grön (tillräcklig kvalitet)'
       egenskaper:
         description: 
           Array innehållande de ev. egenskapsvärden som kan anges för aktuell lämningstyp.
@@ -922,14 +899,6 @@ definitions:
           type: string
           format: uuid      
           example: ccf0a7f9-1f4c-421f-a321-0e36daea43eb
-      forandringar_sedan:
-          type: string
-          format: dateTime
-          description: Anger tidpunkten för att hämta endast de lämningar som förändrats i fältsessionen sedan angiven tidpunkt. 
-            Tidpunkt anges enligt defined by full-date - RFC3339.
-            Se RFC3339 (Internet Date/Time Format) http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
-            Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
-            example; 2017-10-30 08:00:18
      
   FeatureCollectionLamning:
     description: Anger den geografiska utbredningen för en lämnings geometri i form av ett objekt av typen "http://geojson.org/geojson-spec.html#feature-collection-objects".  
