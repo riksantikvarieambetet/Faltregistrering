@@ -33,6 +33,10 @@ info:
       Antag att han väljer en lämning. Det känns då lite trubbigt att behöva hämta alla lämningar igen för att kasta bort
       alla utom en. Diskutera med Hans endpointen 
      
+    * TODO  GET /metadata returnera versionsnummer och lämningstyplistaversion
+    * TODO POST kvalitetmärkningstyp - Borde inte finnas som metadata! Värdet är ju read only. Vi skulle kunna 
+      skicka värdet i klartext.
+    * TODO lämningsyplistaversion.   
   contact:
     url: https://metria.se
     email: todo@metria.se
@@ -70,6 +74,27 @@ paths:
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
             $ref: '#/definitions/Error'
+      tags:
+        - Metadata
+    
+    get:
+      summary: Returnerar installerade metadataversioner i Metria fältserver.
+      description: Returnerar installerade metadataversioner i Metria fältserver.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Returnerar installerade metadataversioner.
+          schema:
+              $ref: '#/definitions/Metadataversion'
+        '401':
+          description: (Unauthorized). Användaren är inte inloggad (autentiserad).
+          schema:
+            $ref: '#/definitions/Error'  
+        '500':
+          description: (Internal server error). Ett oväntat fel inträffade.
+          schema:
+            $ref: '#/definitions/Error' 
       tags:
         - Metadata
 
@@ -1142,8 +1167,29 @@ definitions:
     description: Objektrepresentation av metadatadefinitioner avsedd att användas vid fältfångst av lämningar.
     type: object
     required:
+      - metadata_version
+      - lamningstyplista_version
+      - aktualitetstatus
+      - antikvariskbedomning
       - lamningstyplista
+      - matmetod
+      - placering
+      - registreringsunderlag
+      - skadestatus
+      - undersokningsstatus
     properties:
+      metadata_version:
+        description: |
+          Anger versionsnummer för de metadatadefinitioner som ingår i denna payload. (Hämtas från flyway versionsnummer).         
+        type: string
+        maxLength: 50
+        example: '012'
+      lamningstyplista_version:
+        description: |
+          Anger versionsnummer för den lämningstyplista vars metadatadefinitioner ingår i denna payload (se attributet lamningstyplista).         
+        type: string
+        maxLength: 50
+        example: '4.6'
       aktualitetstatus:
         description: Anger metadata definitioner avseende aktualitetstatus.        
         type: array
@@ -1158,7 +1204,7 @@ definitions:
         description: Anger metadata definitioner för lämningstypinformation.        
         type: array
         items:
-          $ref: '#/definitions/Lamningstyp'    
+          $ref: '#/definitions/Lamningstyp'
       matmetod:
         description: Anger metadata definitioner avseende matmetod.        
         type: array
@@ -1184,6 +1230,28 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Undersokningsstatustyp'                 
+   
+  Metadataversion:
+    description: Objektrepresentation av metadataversionsnummer i Metria fältserver.
+    type: object
+    required:
+      - metadata_version
+      - lamningstyplista_version
+    properties:
+      lamningstyplista_version:
+        description: |
+          Anger installerad versionsnummer för den lämningstyplista som Metria fältserver använder.         
+        type: string
+        maxLength: 50
+        example: '012'
+      metadata_version:
+        description: |
+          Anger installerad versionsnummer för de metadatadefinitioner som Metria fältserver använder.         
+        type: string
+        maxLength: 50
+        example: '012'
+        
+        
 
   NuvarandeLage:
     description: | 
@@ -1425,7 +1493,7 @@ definitions:
         maxLength: 300
         description: Anger namnet på uppgiftslämnaren.
         example: Bengt Andersson
-        
+  
   FeatureCollectionFaltsessionomrade:
     description: Anger geografisk utbredning för en yta i en fältsession.
       (Härstammar från ett s.k. undersökningsområde).
