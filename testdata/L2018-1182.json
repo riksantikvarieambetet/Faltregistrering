@@ -1,0 +1,181 @@
+{
+	"faltLamning": {
+		"lamning_id": "1b84eefb-e9ce-4f13-884a-64e922ff6bb7",
+		"lamningsnummer": "L2018:1182",
+		"lamningstyp_id": 108,
+		"antikvariskbedomningtyp_id": 1,
+		"antikvarisk_kommentar": null,
+		"rekommenderad_antikvariskbedomningtyp_id": 1,
+		"rekommenderad_antikvariskbedomningtyp_namn": "Fornlämning",
+		"beskrivning": "Gruvområde med 1 damvall, 2 berghistorisk lämning övrig - typ gråbergsvarp, 1 Berghistorisk lämning överig -typ hjulgrav, 1 Gruvhål Material - Bly-/silvermalm, Järnmalm, Övrig, Teknik -  Sprängning, Tillmakning, Typ - Gruvhål, 1 Husgrund, förhistorisk/medeltida, Typ - Husgrund med vallformig begränsning",
+		"aktualitetstatus": {
+			"aktualitetstatustyp_id": 1,
+			"aktualitetstatus_kommentar": null
+		},
+		"undersokningsstatus": {
+			"undersokningsstatustyp_id": 3,
+			"undersokningsstatus_kommentar": null
+		},
+		"skadestatus": {
+			"skadestatustyp_id": 4,
+			"skadestatus_kommentar": null
+		},
+		"egenskaper": [],
+		"ingaendelamningar": [{
+			"lamningstyp_id": 1006,
+			"antal": 2,
+			"egenskaper": [{
+				"egenskapstyp_id": 10004,
+				"egenskapsvarden": [{
+					"egenskapsvarde_id": 10
+				}]
+			}]
+		}, {
+			"lamningstyp_id": 1006,
+			"antal": 1,
+			"egenskaper": [{
+				"egenskapstyp_id": 10004,
+				"egenskapsvarden": [{
+					"egenskapsvarde_id": 11
+				}]
+			}]
+		}, {
+			"lamningstyp_id": 1020,
+			"antal": 1,
+			"egenskaper": []
+		}, {
+			"lamningstyp_id": 1054,
+			"antal": 1,
+			"egenskaper": [{
+				"egenskapstyp_id": 10037,
+				"egenskapsvarden": [{
+					"egenskapsvarde_id": 158
+				}, {
+					"egenskapsvarde_id": 159
+				}, {
+					"egenskapsvarde_id": 161
+				}]
+			}, {
+				"egenskapstyp_id": 10038,
+				"egenskapsvarden": [{
+					"egenskapsvarde_id": 163
+				}, {
+					"egenskapsvarde_id": 164
+				}]
+			}, {
+				"egenskapstyp_id": 10036,
+				"egenskapsvarden": [{
+					"egenskapsvarde_id": 155
+				}]
+			}]
+		}, {
+			"lamningstyp_id": 1054,
+			"antal": 1,
+			"egenskaper": [{
+				"egenskapstyp_id": 10038,
+				"egenskapsvarden": [{
+					"egenskapsvarde_id": 162
+				}]
+			}]
+		}, {
+			"lamningstyp_id": 1060,
+			"antal": 1,
+			"egenskaper": [{
+				"egenskapstyp_id": 10042,
+				"egenskapsvarden": [{
+					"egenskapsvarde_id": 181
+				}]
+			}]
+		}],
+		"kartmaterial_referenser": [],
+		"skriftlig_kalla_referenser": [],
+		"uppgiftslamnare_referenser": [],
+		"placeringtyp_id": 1,
+		"placeringtyp_namn": "Synlig ovan mark",
+		"alternativnamn": [],
+		"faltdatum": null,
+		"orientering": null,
+		"terrang": null,
+		"vegetation": null,
+		"tradition": null,
+		"nuvarande_lage": {
+			"registreringsunderlagtyp_id": 102,
+			"registreringsunderlagkvalitettyp_id": 207,
+			"matmetodtyp_id": 4,
+			"felmarginal_meter": 0.025,
+			"geometri": {
+				"type": "FeatureCollection",
+				"crs": {
+					"type": "name",
+					"properties": {
+						"name": "EPSG:3006"
+					}
+				},
+				"features": [{
+					"type": "Feature",
+					"geometry": {
+						"type": "Polygon",
+						"coordinates": [
+							[
+								[673437.45250962, 6567283.17080582],
+								[673442.16914667, 6567003.83748284],
+								[673254.67550487, 6566887.50915169],
+								[673155.93103022, 6567071.27822995],
+								[673248.82914992, 6567138.7411625],
+								[673266.69755745, 6567210.16160356],
+								[673437.45250962, 6567283.17080582]
+							]
+						]
+					},
+					"properties": {
+						"lamning_id": "1b84eefb-e9ce-4f13-884a-64e922ff6bb7",
+						"lamningsnummer": "L2018:1182",
+						"lamningstyp_id": 108,
+						"lamningstyp_namn": "Gruvområde",
+						"antikvariskbedomningtyp_id": 1,
+						"antikvariskbedomningtyp_namn": "Fornlämning",
+						"lamningsstatus": "PRELIMINAR",
+						"geometrinummer": "L2018:1182-1"
+					},
+					"id": "L2018:1182-1"
+				}, {
+					"type": "Feature",
+					"geometry": {
+						"type": "Polygon",
+						"coordinates": [
+							[
+								[672977.8008242, 6566674.82515559],
+								[672704.77299496, 6566627.74752338],
+								[672603.47489905, 6566961.74411816],
+								[672899.68225122, 6567012.71147264],
+								[673032.38250886, 6567104.87459],
+								[673131.98981402, 6566966.58211906],
+								[673290.70479782, 6566805.30855207],
+								[673015.54831128, 6566611.14356392],
+								[672977.8008242, 6566674.82515559]
+							]
+						]
+					},
+					"properties": {
+						"lamning_id": "1b84eefb-e9ce-4f13-884a-64e922ff6bb7",
+						"lamningsnummer": "L2018:1182",
+						"lamningstyp_id": 108,
+						"lamningstyp_namn": "Gruvområde",
+						"antikvariskbedomningtyp_id": 1,
+						"antikvariskbedomningtyp_namn": "Fornlämning",
+						"lamningsstatus": "PRELIMINAR",
+						"geometrinummer": "L2018:1182-2"
+					},
+					"id": "L2018:1182-2"
+				}]
+			},
+			"centrum": {
+				"ost": 673104.43652144,
+				"nord": 6566954.259680799
+			},
+			"inmatning_kommentar": null
+
+		},
+		"senast_andrad": "2018-10-17 16:59:42.201"
+	}
+}
