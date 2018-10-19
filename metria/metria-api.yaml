@@ -220,9 +220,7 @@ paths:
         '200':
           description: En fältsession.
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Faltsession'
+            $ref: '#/definitions/Faltsession'
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
