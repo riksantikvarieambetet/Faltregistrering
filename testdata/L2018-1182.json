@@ -91,7 +91,6 @@
 		"skriftlig_kalla_referenser": [],
 		"uppgiftslamnare_referenser": [],
 		"placeringtyp_id": 1,
-		"placeringtyp_namn": "Synlig ovan mark",
 		"alternativnamn": [],
 		"faltdatum": null,
 		"orientering": null,
@@ -169,10 +168,7 @@
 					"id": "L2018:1182-2"
 				}]
 			},
-			"centrum": {
-				"ost": 673104.43652144,
-				"nord": 6566954.259680799
-			},
+
 			"inmatning_kommentar": null
 
 		},
