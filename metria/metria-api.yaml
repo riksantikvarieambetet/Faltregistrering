@@ -789,11 +789,11 @@ definitions:
         $ref: '#/definitions/Undersokningsstatus'    
       skadestatus:
         $ref: '#/definitions/Skadestatus'
-      kvalitetsmarkning:
-          type: string
-          description: Anger kvalitetsmärkning för lämningen. (read-only). 
-          maxLength: 255
-          example: 'Grön (tillräcklig kvalitet)'
+#      kvalitetsmarkning:
+#          type: string
+#          description: Anger kvalitetsmärkning för lämningen. (read-only). 
+#          maxLength: 255
+#          example: 'Grön (tillräcklig kvalitet)'
       egenskaper:
         description: 
           Array innehållande de ev. egenskapsvärden som kan anges för aktuell lämningstyp.
