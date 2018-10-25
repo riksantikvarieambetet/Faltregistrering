@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.2.0
+  version: 0.2.1
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
