@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.2.3  
+  version: 0.2.4  
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
@@ -722,7 +722,7 @@ definitions:
       namn:
         type: string
         description: Anger fältsessionens namn.
-        maxLength: 33
+        maxLength: 50
         example: '201800205 - Nyskoga'
         
       beskrivning:
