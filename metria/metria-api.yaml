@@ -8,10 +8,7 @@ info:
     # Utestående frågor
     Nedan listas frågor som behöver redas ut med Metria.
                  
-    * Införa versionsnummer och optimistisk objektlåsning i Metrias api på fältsessionsnivå?! (20181016)
-      Dvs - inför ett versionsnummer för en fältsession. När någon förändring på en ingående lämning sker 
-      uppdateras versionsnumret. Detta för att unvika problemet att användaren har lagt till ny lämningsinformation 
-      ( t ex synkar sin offline enhet) under tiden han tittar på lämninarna i Fornreg. Kolla med Hans! 
+    * Inga utestående frågor.
            
   contact:
     url: https://metria.se
