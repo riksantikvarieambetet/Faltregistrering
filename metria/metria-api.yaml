@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.2.4  
+  version: 0.2.5  
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
@@ -590,21 +590,22 @@ definitions:
         type: string
         description: Anger beskrivning för egenskapstypen.
         example: bla bla...
-      aktiv:
-        type: boolean
-        description: Anger om egenskapstypen är aktiv och kan användas vid registrering.
       flervalsvarde:
         type: boolean
         description: Anger om egenskapstypen är flervärdig (true) eller endast kan
           förekomma en gång för egenskapen (false).
         example: true
-      egenskapsvarde:
+      egenskapsvarden:
         description: Anger lista av egenskapsvärden som är kopplade till egenskapstypen. 
           Sorterad i alfabetisk ordning på egenskapsvärdets värde (Namnet på
           egenskapsvärdet).    
         type: array
         items:
           $ref: '#/definitions/Egenskapsvardetyp'
+      aktiv:
+        type: boolean
+        description: Anger om egenskapstypen är aktiv och kan användas vid registrering.
+
 
   Egenskapsvardetyp:
     description: Objektrepresentation för ett egenskapsvarde.
