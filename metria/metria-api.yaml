@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.2.5  
+  version: 0.2.6  
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
@@ -1321,13 +1321,20 @@ definitions:
           type: string
           description: 'Anger namnet för angiven placeringstyp (lämpligt för presentation). '
           example: Ej synlig ovan mark
+        beskrivning:
+          type: string
+          description: Anger beskrivning av den antikvariska bedömningen.
+          example: Objektet är en fornlämning och därmed skyddad av lag.
+        sorteringsordning:
+          type: integer
+          description: Anger logisk ordning. (Ascending sortorder)
+          example: 0
         aktiv:
           type: boolean
           description: >-
             Anger om placeringstypen är aktiv (true) och kan användas vid
             registrering.
           example: true
-          
 
   Registreringsunderlagtyp:
       description: Objektrepresentation för en registreringsunderlagtyp.
