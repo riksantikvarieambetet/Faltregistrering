@@ -6458,18 +6458,26 @@
   "placering" : [ {
     "placeringtyp_id" : 1,
     "namn" : "Synlig ovan mark",
+    "beskrivning" : "TODO 1!",
+    "sorteringsordning" : 10,
     "aktiv" : true
   }, {
     "placeringtyp_id" : 3,
     "namn" : "Ej synlig ovan mark",
+    "beskrivning" : "TODO 3!",
+    "sorteringsordning" : 20,
     "aktiv" : true
   }, {
     "placeringtyp_id" : 2,
     "namn" : "I byggnad eller under vatten",
+    "beskrivning" : "TODO 2!",
+    "sorteringsordning" : 30,
     "aktiv" : true
   }, {
     "placeringtyp_id" : 4,
     "namn" : "Bebyggt stadslager",
+    "beskrivning" : "TODO 4!",
+    "sorteringsordning" : 40,
     "aktiv" : true
   } ],
   "registreringsunderlag" : [ {
