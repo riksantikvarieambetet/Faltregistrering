@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.2.7  
+  version: 0.2.8  
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
@@ -722,6 +722,11 @@ definitions:
       - organisation_id
       - namn
     properties:
+      faltsession_id:
+        type: string
+        format: uuid
+        description: Anger den ev.identitet (uuid) en klient vill använda som identitet för en fältsession.
+          Om attributet utelämnas genereras identiteten av systemet. 
       organisation_id:
         type: string
         description: Anger organisationsnumret för den organisation som en fältsession tillhör.
@@ -733,7 +738,6 @@ definitions:
         description: Anger fältsessionens namn.
         maxLength: 50
         example: '201800205 - Nyskoga'
-        
       beskrivning:
         type: string
         example: 'Ett fältsession...'
