@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.2.9  
+  version: 0.2.10  
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
@@ -646,7 +646,7 @@ definitions:
       rekommenderad_antikvariskbedomningtyp_id:
         type: integer
         description: Rekommenderad antikvarisk bedömning för lämningstyp, kan vara null
-        example: 1001
+        example: 1
       varde:
         type: string
         maxLength: 255
@@ -805,7 +805,7 @@ definitions:
       lamningstyp_id:
         type: integer
         format: int32
-        minimum: 1001
+        minimum: 101
         description: Anger lämningstyp_id för lämningen. Ex, 1001= lämningstypen
           'Avrättningsplats'. 
         example: 1035
@@ -928,7 +928,7 @@ definitions:
       lamningstyp_id:
         type: integer
         format: int32
-        minimum: 1001
+        minimum: 101
         description: Anger lämningstyp_id för lämningen. Ex, 1001= lämningstypen
           'Avrättningsplats'. 
         example: 1035
@@ -1111,7 +1111,7 @@ definitions:
       lamningstyp_id:
         type: integer
         description: Anger stabil identitet för lämningstypen.
-        example: 1001
+        example: 100
       namn:
         type: string
         minLength: 1
@@ -1167,7 +1167,7 @@ definitions:
       rekommenderad_antikvariskbedomningtyp_id:
         type: integer
         description: Rekommenderad antikvarisk bedömning för lämningstyp, kan vara null
-        example: 1001
+        example: 1
       aktiv:
         type: boolean
         description: Anger om lämningstypen är aktiv eller ej (relevant vid nyregistrering av en lämningtyp).
