@@ -1292,7 +1292,7 @@ definitions:
         example: '012'
       senast_andrad:    
         type: string
-        format: date
+        format: date-time
         description: |
           Anger tidpunkt då aktuella metadatadefinitioner installerades i Metria fältserver.
           Tidpunkt anges enligt defined by full-date - RFC3339.
