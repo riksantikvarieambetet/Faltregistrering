@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.2.10  
+  version: 0.2.11  
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
@@ -494,6 +494,8 @@ definitions:
   Aktualitetstatus:
     description: Objektrepresentation för en aktualitetstatusinstans.
     type: object
+    required:
+      - aktualitetstatustyp_id
     properties:
       aktualitetstatustyp_id:
         type: integer
@@ -784,6 +786,9 @@ definitions:
       - lamningsnummer
       - lamningstyp_id
       - nuvarande_lage
+      - aktualitetstatus
+      - undersokningsstatus
+      - skadestatus
     properties:
       lamning_id:
         type: string
@@ -903,7 +908,6 @@ definitions:
     type: object
     required:
       - lamning_id
-      - lamningsnummer
       - lamningstyp_id
       - tillfallig_arbetsidentitet
       - senast_andrad
@@ -944,8 +948,10 @@ definitions:
   FaltlamningPost:
     description: Parameterobjekt för att addera lämningar kopplade till en fältsession.
     type: object
+    required:
+      - faltlamning
     properties:
-      faltLamning:
+      faltlamning:
         description: 
           Array innehållande de lamningar som ska adderas till angiven fältsession.
         type: array
@@ -955,8 +961,10 @@ definitions:
   FaltlamningDelete:
     description: Parameterobjekt för att radera lämningar kopplade till en fältsession.
     type: object
+    required:
+      - faltlamning
     properties:
-      faltLamning:
+      faltlamning:
         description: 
           Array innehållande identiteter(uuid) till de lämningar som ska raderas från en fältsession. 
         type: array
@@ -968,8 +976,10 @@ definitions:
   FaltlamningSearch:
     description: Parameterobjekt för att hämta lämningar kopplade till en fältsession.
     type: object
+    required:
+      - faltlamning
     properties:
-      faltLamning:
+      faltlamning:
         description: 
           Array innehållande identiteter(uuid) till de lämningar som ska hämtas från en fältsession. 
         type: array
@@ -1465,6 +1475,8 @@ definitions:
   Skadestatus:
     description: Objektrepresentation för en skadestatusinstans.
     type: object
+    required:
+      - skadestatustyp_id
     properties:
       skadestatustyp_id:
         type: integer
@@ -1502,6 +1514,8 @@ definitions:
   Undersokningsstatus:
     description: Objektrepresentation för en undersökningsstatusinstans.
     type: object
+    required:
+      - undersokningsstatustyp_id
     properties:
       undersokningsstatustyp_id:
         type: integer
