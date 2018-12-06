@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.2.11  
+  version: 0.2.12  
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
@@ -1040,9 +1040,9 @@ definitions:
             id:
               type: string
               description: Anger unik och stabil identitet (geometrinummer) för aktuell feature. <br> 
-                Geometrinumret har syntaxen; Lämningsnummer-<lämningsgeometrilöpnummer>.
-                För nya geometrier - anges endast ett geometrilöpnummer utan lämningsnummer. Ex; '3'                          
-              example: 'L2017:105-4 alternativt 3'
+                Geometrinumret har syntaxen; Lämningsnummer-<lämningsgeometrilöpnummer>. <br>
+                Obs! För nya geometrier som saknar geometrinummer så skall värdet inget värde anges - detta för att markera att geometrin är nyskapad.                          
+              example: 'L2017:105-4'
             geometry:
               type: object
               required:
