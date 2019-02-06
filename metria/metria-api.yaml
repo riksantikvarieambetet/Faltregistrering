@@ -1,18 +1,13 @@
 swagger: '2.0'
 info:
-  version: 0.2.12  
+  version: 1.0.0
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
-    
-    # Utestående frågor
-    Nedan listas frågor som behöver redas ut med Metria.
-                 
-    * Inga utestående frågor.
            
   contact:
     url: https://metria.se
-    email: todo@metria.se
+    email: e-support@metria.se
 host: metria.se
 
 schemes:
@@ -1118,6 +1113,12 @@ definitions:
   Lamningstyp:
     description: Objektrepresentation för en lämningstyp.
     type: object
+    required:
+      - lamningstyp_id
+      - namn
+      - definition
+      - kategorier 
+      - aktiv
     properties:
       lamningstyp_id:
         type: integer
@@ -1127,8 +1128,8 @@ definitions:
         type: string
         minLength: 1
         maxLength: 255
-        description: Anger namnet för angiven lämningstyp (lämpligt för presentation). Ex;
-          'Avrättningsplats'.
+        description: Anger namnet för angiven lämningstyp (lämpligt för presentation).
+        example: 'Avrättningsplats'   
       egenskapstyper:
         description: Anger lista av ev. egenskapstyper som är kopplade till lämningstypen. 
           Sorterad i alfabetisk ordning på egenskapstypens namn.  
@@ -1170,7 +1171,7 @@ definitions:
           avrättningarna i fängelserna. Enstaka avrättningsplatser är dock
           använda under 1850-talet (se t.ex. Varnhem 86:1). När dessa
           avrättningsplatser tillkom är dock ofta oklart..
-      kategori:
+      kategorier:
         description: Array innehållande de lämningstypkategorier som lämningen tillhör.
         type: array
         items:
