@@ -33,11 +33,11 @@ paths:
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Metadata
     
@@ -54,11 +54,11 @@ paths:
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'  
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error' 
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Metadata
 
@@ -78,11 +78,11 @@ paths:
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'  
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error' 
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Organisation
 
@@ -106,15 +106,15 @@ paths:
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'  
+            $ref: './error.yaml#/definitions/Error'
         '404':
           description: (Not found). Angiven post kunde inte hittas.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
       tags:
          - Organisation 
 
@@ -141,15 +141,15 @@ paths:
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'  
+            $ref: './error.yaml#/definitions/Error'
         '404':
           description: (Not found). Angiven post kunde inte hittas.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
       tags:
          - Organisation 
 
@@ -177,16 +177,16 @@ paths:
         '400':
           description: (Bad request). Felaktigt indata angavs för posten (typiskt valideringsfel).
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
             
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Fältsession
   
@@ -212,15 +212,15 @@ paths:
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '404':
           description: (Not found). Angiven post kunde inte hittas.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Fältsession
         
@@ -240,19 +240,19 @@ paths:
         '400':
           description: (Bad request). Felaktig indata.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '401':
           description: (Unauthorized). Användaren är inte inloggad.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '404':
           description: (Not Found). Angiven post kunde inte hittas.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal Server Error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Fältsession
         
@@ -286,15 +286,15 @@ paths:
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '404':
           description: (Not found). Angiven post kunde inte hittas.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Lämning
         - Fältsession
@@ -322,15 +322,15 @@ paths:
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '404':
           description: (Not found). Angiven post kunde inte hittas.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Lämning
         - Fältsession
@@ -357,23 +357,23 @@ paths:
         '400':
           description: (Bad request). Felaktigt indata angavs för posten (typiskt valideringsfel).
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '403':
           description: (Forbidden). Användaren saknar behörighet för angiven fältsession.
           schema:
-            $ref: '#/definitions/Error'              
+            $ref: './error.yaml#/definitions/Error'
         '404':
           description: Angivet faltsession_id kunde inte hittas.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'            
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Lämning
         - Fältsession
@@ -399,19 +399,19 @@ paths:
         '400':
           description: (Bad request). Felaktig indata.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '401':
           description: (Unauthorized). Användaren är inte inloggad.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '404':
           description: (Not Found). Angiven post kunde inte hittas.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal Server Error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Lämning
         - Fältsession
@@ -442,15 +442,15 @@ paths:
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '404':
           description: (Not found). Angiven post kunde inte hittas.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Lämning
         - Fältsession
@@ -472,7 +472,7 @@ paths:
         '401':
           description: (Unauthorized). Användaren är inte inloggad (autentiserad).
           schema:
-            $ref: '#/definitions/Error'      
+            $ref: './error.yaml#/definitions/Error'
         '200':
           description: (OK). Ett json-objekt med attributet 'echo' returneras.
           schema:
@@ -480,7 +480,7 @@ paths:
         '500':
           description: (Internal server error). Ett oväntat fel inträffade.
           schema:
-            $ref: '#/definitions/Error'    
+            $ref: './error.yaml#/definitions/Error'
       tags:
         - Övriga tjänster
 
@@ -653,40 +653,6 @@ definitions:
         type: boolean
         description: Anger om egenskapsvärdet är aktivt (true) och kan användas vid
           registrering.
-          
-  Error:
-    description: Objektrepresentation av felmeddelanden.
-    type: object
-    required:
-      - status
-      - message
-      - path
-      - timestamp
-    properties:
-      status:
-        type: integer
-        example: 500
-        description: Http statuskod
-      message:
-        type: string
-        example: 'Tekniskt fel, försök senare'
-        description: Innehåller ett felmeddelande tänkt att presenteras för slutanvändare
-      exception:
-        type: string
-        example: java.lang.NullPointerException
-        description: Innehåller ett felmeddelande tänkt för tekniker vid felsökning
-      path:
-        type: string
-        example: /lamning
-        description: Anger den resourcepath där felet uppstod
-      timestamp:
-        type: string
-        format: dateTime
-        description: Anger tidpunkten när felet inträffade. 
-          Tidpunkt anges enligt defined by full-date - RFC3339.
-          Se RFC3339 (Internet Date/Time Format) http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
-          Syntax; <date-fullyear>-<date-month>-<date-mday> <time-hour>:<time-minute>:<time-second>
-        example: '2017-10-30 08:00:18'
 
   Faltsession:
     description: Objektrepresentation av en fältsession.
