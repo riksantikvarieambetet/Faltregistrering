@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 1.0.1
+  version: 1.0.2
   title: Metria Fältregistrering API
   description: |
     API för integration mellan "Fornreg/Lämningsregistret" och "Fältregistreringstjänsten" som byggs av Metria.
@@ -1372,6 +1372,14 @@ definitions:
         type: string
         description: Anger ev. kommentar för hur inmätningen genomfördes.
         example: 'Vid inmätningen använde GPS:en 22 satelliter.'
+      min_meter_over_havet:
+        type: integer
+        description: Anger lägsta punkten uttryckt i meter för lämningens utbredning.
+        example: 15
+      max_meter_over_havet:
+        type: integer
+        description: Anger högsta punkten uttryckt i meter för lämningens utbredning.
+        example: 20
       geometri:
         $ref: '#/definitions/FeatureCollectionLamning'
   
